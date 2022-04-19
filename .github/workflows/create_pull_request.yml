@@ -4,6 +4,7 @@ on:
     branches:
       - feature/*
       - test/*
+      - test
 
 jobs:
   create-pull-request:
