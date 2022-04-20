@@ -29,4 +29,4 @@ jobs:
         npm install
         npm install -g gulp axios
         gulp --tasks
-        gulp createnotification --b "${{ secrets.SLACK_WEBHOOK_URL }}"
+        gulp createnotification --b ${{ secrets.SLACK_WEBHOOK_URL }}
