@@ -2,9 +2,11 @@ name: NodeJS with Gulp
 
 on:
   push:
-    branches: [ master ]
+    branches: [ develop ]
+    paths: ["gulpfile.js"]
   pull_request:
-    branches: [ master ]
+    branches: [ develop ]
+    paths: ["gulpfile.js"]
 
 jobs:
   build:
@@ -25,4 +27,4 @@ jobs:
     - name: Build
       run: |
         npm install
-        gulp
+        gulp --tasks
