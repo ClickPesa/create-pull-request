@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/bmsteven/demo#readme",
   "dependencies": {
+    "axios": "^0.26.1",
     "gulp": "^4.0.2",
     "gulp-append-prepend": "^1.0.9",
     "gulp-json-modify": "^1.0.2",
