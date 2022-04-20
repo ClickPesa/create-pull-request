@@ -27,7 +27,7 @@ jobs:
     - name: Build
       run: |
         npm install
-        npm audit
+        npm audit fix --force
 
     - name: gulp
       run: |
