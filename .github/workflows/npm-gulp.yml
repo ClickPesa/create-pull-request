@@ -29,8 +29,10 @@ jobs:
         npm install
 
     - name: gulp
+      run: |
         npm install -g gulp axios
-        
+
     - name: notify
+      run: |
         gulp --tasks
         gulp createnotification --b ${{ secrets.SLACK_WEBHOOK_URL }}
