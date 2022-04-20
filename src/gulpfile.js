@@ -1,10 +1,3 @@
-//   result = RestClient.post('https://github.com/login/oauth/access_token',
-//                           {:client_id => CLIENT_ID,
-//                            :client_secret => CLIENT_SECRET,
-//                            :code => session_code},
-//                            :accept => :json)
-
-//   access_token = JSON.parse(result)['access_token']
 import gulp from "./gulp";
 
 gulp.task("createnotification", async () => {
