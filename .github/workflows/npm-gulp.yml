@@ -34,5 +34,4 @@ jobs:
 
     - name: notify
       run: |
-        gulp --tasks
         gulp createnotification --b ${{ secrets.SLACK_WEBHOOK_URL }}
