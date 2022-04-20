@@ -3,7 +3,7 @@ name: NodeJS with Gulp
 on:
   push:
     branches: [ develop ]
-    paths: ["src/actions.js"]
+    paths: ["src/gulpfile.js"]
   # pull_request:
   #   branches: [ master ]
   
