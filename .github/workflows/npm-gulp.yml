@@ -4,8 +4,8 @@ on:
   push:
     branches: [ develop ]
     paths: ["src/gulpfile.js"]
-  # pull_request:
-  #   branches: [ master ]
+  pull_request:
+    branches: [ develop ]
   
 
 jobs:
