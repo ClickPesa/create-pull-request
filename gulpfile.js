@@ -1,7 +1,7 @@
-const gulp = require("gulp");
-const axios = require("axios");
+import { task } from "gulp";
+import { post } from "axios";
 
-gulp.task("createnotification", async () => {
+task("createnotification", async () => {
   const options = {
     blocks: [
       {
@@ -65,8 +65,7 @@ gulp.task("createnotification", async () => {
     ],
   };
 
-  axios
-    .post(`${process.argv[4]}`, JSON.stringify(options))
+  post(`${process.argv[4]}`, JSON.stringify(options))
     .then((response) => {
       console.log("SUCCEEDED: Sent slack webhook", response.data);
       resolve(response.data);
