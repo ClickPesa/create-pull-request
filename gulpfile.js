@@ -7,7 +7,7 @@ gulp.task("createnotification", async () => {
         type: "header",
         text: {
           type: "plain_text",
-          text: ":sparkles:  New pull request for manual review on get-paid",
+          text: ":sparkles:  New pull request for manual review on github actions",
           emoji: true,
         },
       },
@@ -34,7 +34,7 @@ gulp.task("createnotification", async () => {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `sample`,
+          text: `sample from from github`,
         },
       },
       {
