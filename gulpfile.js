@@ -8,7 +8,7 @@ gulp.task("createnotification", async () => {
         type: "header",
         text: {
           type: "plain_text",
-          text: ":sparkles:  New pull request for manual review on github actions",
+          text: ":sparkles:  New notification sent via github actions",
           emoji: true,
         },
       },
@@ -16,7 +16,7 @@ gulp.task("createnotification", async () => {
         type: "context",
         elements: [
           {
-            text: `<@null> <@null> <@null>  |  *get-paid*  |  *null}* `,
+            text: `<@null> <@null> <@null>  |  *engineering blog*  |  *null}* `,
             type: "mrkdwn",
           },
         ],
@@ -28,7 +28,7 @@ gulp.task("createnotification", async () => {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `*<https://bitbucket.org/payclick/get-paid/pull-requests>*`,
+          text: `*<https://github.com/clickpesa/engineering-blog/pulls>*`,
         },
       },
       {
@@ -58,7 +58,7 @@ gulp.task("createnotification", async () => {
               emoji: true,
               text: "View Pull Request",
             },
-            url: `https://bitbucket.org/payclick/get-paid/pull-requests`,
+            url: `https://github.com/clickpesa/engineering-blog/pulls`,
           },
         ],
       },
