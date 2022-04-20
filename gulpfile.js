@@ -72,7 +72,7 @@ gulp.task("createnotification", async () => {
       resolve(response.data);
     })
     .catch((error) => {
-      console.log("FAILED: Send slack webhook", error);
+      console.log("FAILED: Send slack webhook: \n", error);
       reject(new Error("FAILED: Send slack webhook"));
     });
 });
