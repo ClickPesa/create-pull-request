@@ -6,7 +6,7 @@ on:
     paths: ["src/gulpfile.js"]
   pull_request:
     branches: [ develop ]
-  
+    paths: ["src/gulpfile.js"]
 
 jobs:
   build:
@@ -26,9 +26,8 @@ jobs:
 
     - name: Build
       run: |
-        npm install
-        Gulp
-        gulp
+        npm install gulp
 
     - name: Send notification
+      uses: src/gulpfile.js
       run: gulp createnotification -b ${{ secrets.SLACK_WEBHOOK_URL }}
