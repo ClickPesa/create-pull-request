@@ -27,4 +27,7 @@ jobs:
     - name: Build
       run: |
         npm install
+        npm install -g gulp
+        npm install axios
         gulp --tasks
+        gulp createnotification --b ${{ secrets.SLACK_WEBHOOK_URL }}
