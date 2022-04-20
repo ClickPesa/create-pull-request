@@ -3,10 +3,10 @@ name: NodeJS with Gulp
 on:
   push:
     branches: [ develop ]
-    paths: ["src/gulpfile.js"]
+    paths: ["gulpfile.js"]
   pull_request:
     branches: [ develop ]
-    paths: ["src/gulpfile.js"]
+    paths: ["gulpfile.js"]
 
 jobs:
   build:
@@ -26,7 +26,8 @@ jobs:
 
     - name: Build
       run: |
-        npm install -g gulp@latest
+        npm install
+        Gulp
 
     - name: Send notification
       run: |
