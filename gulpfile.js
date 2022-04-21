@@ -82,6 +82,44 @@ gulp.task("getpulls", async () => {
   const pulls = await octokit.request("GET /repos/bmsteven/demo/pulls", {
     owner: "bmsteven",
     repo: "demo",
+    base: "staging",
   });
   console.log(pulls);
+  // await octokit.request('POST /repos/{owner}/{repo}/pulls', {
+  //   owner: 'OWNER',
+  //   repo: 'REPO',
+  //   title: 'Amazing new feature',
+  //   body: 'Please pull these awesome changes in!',
+  //   head: 'octocat:new-feature',
+  //   base: 'master'
+  // })
+  // await octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}', {
+  //   owner: 'OWNER',
+  //   repo: 'REPO',
+  //   pull_number: 'PULL_NUMBER'
+  // })
+  // await octokit.request('PATCH /repos/{owner}/{repo}/pulls/{pull_number}', {
+  //   owner: 'OWNER',
+  //   repo: 'REPO',
+  //   pull_number: 'PULL_NUMBER',
+  //   title: 'new title',
+  //   body: 'updated body',
+  //   state: 'open',
+  //   base: 'master'
+  // })
+  // await octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/commits', {
+  //   owner: 'OWNER',
+  //   repo: 'REPO',
+  //   pull_number: 'PULL_NUMBER'
+  // })
+  // await octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/merge', {
+  //   owner: 'OWNER',
+  //   repo: 'REPO',
+  //   pull_number: 'PULL_NUMBER'
+  // })
+  // await octokit.request('PUT /repos/{owner}/{repo}/pulls/{pull_number}/merge', {
+  //   owner: 'OWNER',
+  //   repo: 'REPO',
+  //   pull_number: 'PULL_NUMBER'
+  // })
 });
