@@ -84,14 +84,14 @@ gulp.task("getpulls", async () => {
     repo: "demo",
     base: "staging",
   });
-  console.log(pulls);
+  console.log("pulls", pulls?.data);
 
   const pull = await octokit.request("GET /repos/bmsteven/demo/pulls/16", {
     owner: "bmsteven",
     repo: "demo",
     pull_number: "16",
   });
-  console.log(pull);
+  console.log("pull", pull?.data);
   // update pull request
   // await octokit.request("PATCH /repos/{owner}/{repo}/pulls/{pull_number}", {
   //   owner: "OWNER",
@@ -111,7 +111,7 @@ gulp.task("getpulls", async () => {
       pull_number: "16",
     }
   );
-  console.log(commits);
+  console.log("commits", commits?.data);
   // check if pull request was merged
   const checkPulls = await octokit.request(
     "GET /repos/{owner}/{repo}/pulls/{pull_number}/merge",
@@ -121,7 +121,7 @@ gulp.task("getpulls", async () => {
       pull_number: "16",
     }
   );
-  console.log(checkPulls);
+  console.log("checkPulls", checkPulls?.data);
   // merge pull request
   const mergepr = await octokit.request(
     "PUT /repos/bmsteven/demo/pulls/16/merge",
@@ -131,7 +131,7 @@ gulp.task("getpulls", async () => {
       pull_number: "16",
     }
   );
-  console.log(mergepr);
+  console.log("mergepr", mergepr?.data);
   // create new pull request
   const createPr = await octokit.request("POST /repos/bmsteven/demo/pulls", {
     owner: "bmsteven",
@@ -141,7 +141,7 @@ gulp.task("getpulls", async () => {
     head: "staging",
     base: "master",
   });
-  console.log(createPr);
+  console.log("createPr", createPr?.data);
 });
 
 // scheduled
