@@ -94,11 +94,12 @@ gulp.task("getpulls", async () => {
   //   head: 'octocat:new-feature',
   //   base: 'master'
   // })
-  // await octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}', {
-  //   owner: 'OWNER',
-  //   repo: 'REPO',
-  //   pull_number: 'PULL_NUMBER'
-  // })
+  const pull = await octokit.request("GET /repos/bmsteven/demo/pulls/16", {
+    owner: "bmsteven",
+    repo: "demo",
+    pull_number: "16",
+  });
+  console.log(pull);
   // await octokit.request('PATCH /repos/{owner}/{repo}/pulls/{pull_number}', {
   //   owner: 'OWNER',
   //   repo: 'REPO',
@@ -108,11 +109,15 @@ gulp.task("getpulls", async () => {
   //   state: 'open',
   //   base: 'master'
   // })
-  // await octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/commits', {
-  //   owner: 'OWNER',
-  //   repo: 'REPO',
-  //   pull_number: 'PULL_NUMBER'
-  // })
+  const commits = await octokit.request(
+    "GET /repos/bmsteven/demo/pulls/16/commits",
+    {
+      owner: "bmsteven",
+      repo: "demo",
+      pull_number: "16",
+    }
+  );
+  console.log(commits);
   // await octokit.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/merge', {
   //   owner: 'OWNER',
   //   repo: 'REPO',
