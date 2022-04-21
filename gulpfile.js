@@ -1,5 +1,6 @@
 const gulp = require("gulp");
 const axios = require("axios");
+const { Octokit } = require("@octokit/core");
 
 gulp.task("createnotification", async () => {
   const options = {
@@ -64,7 +65,6 @@ gulp.task("createnotification", async () => {
       },
     ],
   };
-
   axios
     .post(`${process.argv[4]}`, JSON.stringify(options))
     .then((response) => {
@@ -75,4 +75,13 @@ gulp.task("createnotification", async () => {
       console.log("FAILED: Send slack webhook", error);
       reject(new Error("FAILED: Send slack webhook"));
     });
+});
+
+gulp.task("getpulls", async () => {
+  const octokit = new Octokit({ auth: process.argv[4] });
+  const pulls = await octokit.request("GET /repos/bmsteven/demo/pulls", {
+    owner: "bmsteven",
+    repo: "demo",
+  });
+  console.log(pulls);
 });

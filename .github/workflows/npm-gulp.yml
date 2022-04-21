@@ -29,7 +29,9 @@ jobs:
       run: npm install
 
     - name: gulp
-      run: npm install -g gulp axios
+      run: npm install -g gulp axios @octokit/core
 
     - name: notify
-      run: gulp createnotification --b ${{ secrets.SLACK_WEBHOOK_URL }}
+      # run: gulp createnotification --b ${{ secrets.SLACK_WEBHOOK_URL }}
+      run: gulp getpulls --b ${{ secrets.TOKEN }}
+
