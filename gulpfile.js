@@ -114,7 +114,7 @@ gulp.task("getpulls", async () => {
   console.log("commits", commits?.data);
   // check if pull request was merged
   const checkPulls = await octokit.request(
-    "GET /repos/{owner}/{repo}/pulls/{pull_number}/merge",
+    "GET /repos/bmsteven/demo/pulls/16/merge",
     {
       owner: "bmsteven",
       repo: "demo",
