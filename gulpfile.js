@@ -78,70 +78,74 @@ gulp.task("createnotification", async () => {
 });
 
 gulp.task("getpulls", async () => {
-  const octokit = new Octokit({ auth: process.argv[4] });
-  const pulls = await octokit.request("GET /repos/bmsteven/demo/pulls", {
-    owner: "bmsteven",
-    repo: "demo",
-    base: "staging",
-  });
-  console.log("pulls", pulls?.data);
+  try {
+    const octokit = new Octokit({ auth: process.argv[4] });
+    const pulls = await octokit.request("GET /repos/bmsteven/demo/pulls", {
+      owner: "bmsteven",
+      repo: "demo",
+      base: "staging",
+    });
+    console.log("pulls", pulls?.data);
 
-  const pull = await octokit.request("GET /repos/bmsteven/demo/pulls/16", {
-    owner: "bmsteven",
-    repo: "demo",
-    pull_number: "16",
-  });
-  console.log("pull", pull?.data);
-  // update pull request
-  // await octokit.request("PATCH /repos/{owner}/{repo}/pulls/{pull_number}", {
-  //   owner: "OWNER",
-  //   repo: "REPO",
-  //   pull_number: "PULL_NUMBER",
-  //   title: "new title",
-  //   body: "updated body",
-  //   state: "open",
-  //   base: "master",
-  // });
-  // get pull request commits
-  const commits = await octokit.request(
-    "GET /repos/bmsteven/demo/pulls/16/commits",
-    {
+    const pull = await octokit.request("GET /repos/bmsteven/demo/pulls/16", {
       owner: "bmsteven",
       repo: "demo",
       pull_number: "16",
-    }
-  );
-  console.log("commits", commits?.data);
-  // check if pull request was merged
-  const checkPulls = await octokit.request(
-    "GET /repos/bmsteven/demo/pulls/16/merge",
-    {
+    });
+    console.log("pull", pull?.data);
+    // update pull request
+    // await octokit.request("PATCH /repos/{owner}/{repo}/pulls/{pull_number}", {
+    //   owner: "OWNER",
+    //   repo: "REPO",
+    //   pull_number: "PULL_NUMBER",
+    //   title: "new title",
+    //   body: "updated body",
+    //   state: "open",
+    //   base: "master",
+    // });
+    // get pull request commits
+    const commits = await octokit.request(
+      "GET /repos/bmsteven/demo/pulls/16/commits",
+      {
+        owner: "bmsteven",
+        repo: "demo",
+        pull_number: "16",
+      }
+    );
+    console.log("commits", commits?.data);
+    // check if pull request was merged
+    // const checkPulls = await octokit.request(
+    //   "GET /repos/bmsteven/demo/pulls/16/merge",
+    //   {
+    //     owner: "bmsteven",
+    //     repo: "demo",
+    //     pull_number: "16",
+    //   }
+    // );
+    // console.log("checkPulls", checkPulls?.data);
+    // merge pull request
+    const mergepr = await octokit.request(
+      "PUT /repos/bmsteven/demo/pulls/16/merge",
+      {
+        owner: "bmsteven",
+        repo: "demo",
+        pull_number: "16",
+      }
+    );
+    console.log("mergepr", mergepr?.data);
+    // create new pull request
+    const createPr = await octokit.request("POST /repos/bmsteven/demo/pulls", {
       owner: "bmsteven",
       repo: "demo",
-      pull_number: "16",
-    }
-  );
-  console.log("checkPulls", checkPulls?.data);
-  // merge pull request
-  const mergepr = await octokit.request(
-    "PUT /repos/bmsteven/demo/pulls/16/merge",
-    {
-      owner: "bmsteven",
-      repo: "demo",
-      pull_number: "16",
-    }
-  );
-  console.log("mergepr", mergepr?.data);
-  // create new pull request
-  const createPr = await octokit.request("POST /repos/bmsteven/demo/pulls", {
-    owner: "bmsteven",
-    repo: "demo",
-    title: "Amazing new feature",
-    body: "Please pull these awesome changes in!",
-    head: "staging",
-    base: "master",
-  });
-  console.log("createPr", createPr?.data);
+      title: "Amazing new feature",
+      body: "Please pull these awesome changes in!",
+      head: "staging",
+      base: "master",
+    });
+    console.log("createPr", createPr?.data);
+  } catch (error) {
+    console.log(error?.message);
+  }
 });
 
 // scheduled
