@@ -85,7 +85,6 @@ gulp.task("getpulls", async () => {
     base: "staging",
   });
   console.log(pulls);
-
   // await octokit.request('POST /repos/{owner}/{repo}/pulls', {
   //   owner: 'OWNER',
   //   repo: 'REPO',
