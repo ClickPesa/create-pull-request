@@ -16,6 +16,8 @@ const run = async () => {
       ?.split("from")[1]
       .split("\n")[0];
 
+    console.log(branch_name);
+
     const createpr = await octokit.request("POST /repos/bmsteven/demo/pulls", {
       owner: "bmsteven",
       repo: "demo",
