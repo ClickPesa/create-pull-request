@@ -40,20 +40,35 @@ const run = async () => {
         base: "staging",
       }
     );
-    console.log("createPr", createpr?.data);
+    console.log(createpr?.data);
     if (createpr?.data) {
       axios
         .post(
-          `${SLACK_WEBHOOK_URL}`,
-          `PR from ${branch_name} to staging was created successfully`
+          SLACK_WEBHOOK_URL,
+          JSON.stringify(
+            `PR from ${branch_name} to staging was created successfully`
+          )
         )
         .then((response) => {
           console.log("SUCCEEDED: Sent slack webhook", response.data);
-          resolve(response.data);
         })
         .catch((error) => {
           console.log("FAILED: Send slack webhook", error);
-          reject(new Error("FAILED: Send slack webhook"));
+        });
+    } else {
+      // fetch pr from branch_name to staging
+      // update existing pr
+      console.log("pr exists");
+      axios
+        .post(
+          SLACK_WEBHOOK_URL,
+          JSON.stringify(`PR from ${branch_name} to staging already exist`)
+        )
+        .then((response) => {
+          console.log("SUCCEEDED: Sent slack webhook", response.data);
+        })
+        .catch((error) => {
+          console.log("FAILED: Send slack webhook", error);
         });
     }
     const compare_commits = await octokit.request(
