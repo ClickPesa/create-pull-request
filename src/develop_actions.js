@@ -12,7 +12,7 @@ const run = async () => {
   //   console.log(GITHUB_TOKEN);
   //   console.log("test actions");
   try {
-    const branch_name = context.payload?.response?.head_commit?.message
+    const branch_name = context.payload?.head_commit?.message
       ?.split("from")[1]
       .split("\n")[0];
 
