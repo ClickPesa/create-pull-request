@@ -16,12 +16,13 @@ const run = async () => {
       .slice(1)
       .join("/");
 
+    //   context
+    console.log(context.payload);
     console.log("branch name", branch_name);
     console.log("full name", context.payload?.full_name);
     console.log("owner", context.payload?.owner?.login);
     console.log("repo", context.payload?.repository?.name);
 
-    console.log("commits", context.payload?.commits);
     let commits = "";
 
     context.payload?.commits?.forEach((e, i) => {
@@ -32,10 +33,10 @@ const run = async () => {
         !e.message.includes("Skip")
       )
         commits =
-          commits + i !== 0 ? "> " + e.message : "\n\n" + "> " + e.message;
+          i === 0 ? "> " + e.message : commits + "\n\n" + "> " + e.message;
     });
 
-    console.log("formatted commits", commits);
+    console.log(commits);
 
     const createpr = await octokit.request(
       `POST /repos/${context.payload?.full_name}/pulls`,
