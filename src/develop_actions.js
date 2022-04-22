@@ -8,8 +8,8 @@ const octokit = github.getOctokit(GITHUB_TOKEN);
 const { context = {} } = github;
 
 const run = async () => {
-  console.log(context.payload);
-  console.log(GITHUB_TOKEN);
+  //   console.log(context.payload);
+  //   console.log(GITHUB_TOKEN);
   //   console.log("test actions");
   try {
     const branch_name = context.payload?.response?.head_commit?.message
@@ -24,9 +24,9 @@ const run = async () => {
       head: branch_name,
       base: "staging",
     });
-    console.log("createPr", createPr?.data);
+    console.log("createPr", createpr?.data);
   } catch (error) {
-    console.log("error");
+    console.log("error", error?.message);
   }
 };
 
