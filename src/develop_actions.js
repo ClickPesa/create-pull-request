@@ -29,6 +29,10 @@ const run = async () => {
           i === 0 ? "> " + e.message : commits + "\n\n" + "> " + e.message;
     });
 
+    // fetch pr from branch_name to staging to check if it exists
+    // if pr exists, update
+    // if not create
+
     const createpr = await octokit.request(
       `POST /repos/${context.payload?.repository?.full_name}/pulls`,
       {
@@ -40,7 +44,16 @@ const run = async () => {
         base: "staging",
       }
     );
-    console.log(createpr?.data);
+    const compare_commits = await octokit.request(
+      `GET /repos/${context.payload?.repository?.full_name}/compare/staging...${branch_name}`,
+      {
+        owner: context.payload?.repository?.owner?.login,
+        repo: context.payload?.repository?.name,
+        base: "staging",
+        head: branch_name,
+      }
+    );
+    console.log("compare commits", compare_commits);
     if (createpr?.data) {
       axios
         .post(
@@ -56,7 +69,6 @@ const run = async () => {
           console.log("FAILED: Send slack webhook", error);
         });
     } else {
-      // fetch pr from branch_name to staging
       // update existing pr
       console.log("pr exists");
       axios
@@ -71,16 +83,6 @@ const run = async () => {
           console.log("FAILED: Send slack webhook", error);
         });
     }
-    const compare_commits = await octokit.request(
-      `GET /repos/${context.payload?.repository?.full_name}/compare/staging...${branch_name}`,
-      {
-        owner: context.payload?.repository?.owner?.login,
-        repo: context.payload?.repository?.name,
-        base: "staging",
-        head: branch_name,
-      }
-    );
-    console.log(compare_commits);
   } catch (error) {
     console.log("error", error?.message);
   }
