@@ -31,10 +31,10 @@ const run = async () => {
 
     compare_commits?.data?.commits?.forEach((e, i) => {
       if (
-        !e.message.includes("Merge") &&
-        !e.message.includes("Merged") &&
-        !e.message.includes("skip") &&
-        !e.message.includes("Skip")
+        !e?.commit?.message.includes("Merge") &&
+        !e?.commit?.message.includes("Merged") &&
+        !e?.commit?.message.includes("skip") &&
+        !e?.commit?.message.includes("Skip")
       )
         commits =
           i === 0 ? "> " + e.message : commits + "\n\n" + "> " + e.message;
