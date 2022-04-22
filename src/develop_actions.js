@@ -1,7 +1,6 @@
 const axios = require("axios");
 const github = require("@actions/github");
 const core = require("@actions/core");
-// const response = require("../res");
 
 const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
 const SLACK_WEBHOOK_URL = core.getInput("SLACK_WEBHOOK_URL");
@@ -41,7 +40,6 @@ const run = async () => {
         base: "staging",
       }
     );
-    console.log("createPr", createpr?.data);
     if (createpr?.data) {
       axios
         .post(
@@ -57,6 +55,16 @@ const run = async () => {
           reject(new Error("FAILED: Send slack webhook"));
         });
     }
+    const compare_commits = await octokit.request(
+      `GET /repos/${context.payload?.repository?.full_name}/compare/staging...${branch_name}`,
+      {
+        owner: context.payload?.repository?.owner?.login,
+        repo: context.payload?.repository?.name,
+        base: "staging",
+        head: branch_name,
+      }
+    );
+    console.log(compare_commits);
   } catch (error) {
     console.log("error", error?.message);
   }
