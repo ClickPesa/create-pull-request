@@ -57,16 +57,8 @@ const run = async () => {
 
   //   attempt to create PR
   try {
-    const options = {
+    let options = {
       blocks: [
-        {
-          type: "header",
-          text: {
-            type: "plain_text",
-            text: ``,
-            emoji: true,
-          },
-        },
         {
           type: "context",
           elements: [
@@ -90,29 +82,15 @@ const run = async () => {
       }
     );
     if (createpr?.data) {
-      console.log("pr created successfully");
-      //   axios
-      //     .post(SLACK_WEBHOOK_URL, JSON.stringify(options))
-      //     .then((response) => {
-      //       console.log("SUCCEEDED: Sent slack webhook", response.data);
-      //     })
-      //     .catch((error) => {
-      //       console.log("FAILED: Send slack webhook", error);
-      //     });
-    } else {
-      // update existing pr
-      console.log("pr exists");
-      //   axios
-      //     .post(
-      //       SLACK_WEBHOOK_URL,
-      //       JSON.stringify(`PR from ${branch_name} to staging already exist`)
-      //     )
-      //     .then((response) => {
-      //       console.log("SUCCEEDED: Sent slack webhook", response.data);
-      //     })
-      //     .catch((error) => {
-      //       console.log("FAILED: Send slack webhook", error);
-      //     });
+      axios
+        .post(SLACK_WEBHOOK_URL, JSON.stringify(options))
+        .then((response) => {
+          console.log("SUCCEEDED: Sent slack webhook", response.data);
+        })
+        .catch((error) => {
+          console.log("FAILED: Send slack webhook", error);
+        });
+      return;
     }
   } catch (error) {
     console.log("error", error?.message);
@@ -120,6 +98,19 @@ const run = async () => {
 
   //   update PR
   try {
+    const options = {
+      blocks: [
+        {
+          type: "context",
+          elements: [
+            {
+              type: "mrkdwn",
+              text: `<:sparkles: PR was updated from ${branch_name} to staging>`,
+            },
+          ],
+        },
+      ],
+    };
     //   fetching existing PR
     const existing_pr = await octokit.rest.pulls.list({
       owner: context.payload?.repository?.owner?.login,
@@ -128,18 +119,31 @@ const run = async () => {
       head: branch_name,
       base: "staging",
     });
-    console.log("existing PR", existing_pr);
-    // update pr
-    const update_pr = await octokit.rest.pulls.update({
-      pull_number: existing_pr?.data[0].number,
-      owner: context.payload?.repository?.owner?.login,
-      repo: context.payload?.repository?.name,
-      title: branch_name,
-      body: commits,
-      head: branch_name,
-      base: "staging",
-    });
-    console.log(update_pr?.data);
+
+    if (existing_pr?.data) {
+      // update pr
+      const update_pr = await octokit.rest.pulls.update({
+        pull_number: existing_pr?.data[0].number,
+        owner: context.payload?.repository?.owner?.login,
+        repo: context.payload?.repository?.name,
+        title: branch_name,
+        body: commits,
+        head: branch_name,
+        base: "staging",
+      });
+    }
+    if (update_pr.data) {
+      // send slack notification
+      axios
+        .post(SLACK_WEBHOOK_URL, JSON.stringify(options))
+        .then((response) => {
+          console.log("SUCCEEDED: Sent slack webhook", response.data);
+        })
+        .catch((error) => {
+          console.log("FAILED: Send slack webhook", error);
+        });
+      return;
+    }
   } catch (error) {
     console.log("error", error?.message);
   }
