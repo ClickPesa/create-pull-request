@@ -4,18 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "rm -rf action && ncc build src/develop_actions.js -o action",
+    "deploy":"cd src && zip -r -D test.zip .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bmsteven/demo.git"
+    "url": "git+https://github.com/bmsteven/create_pr.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/bmsteven/demo/issues"
+    "url": "https://github.com/bmsteven/create_pr/issues"
   },
-  "homepage": "https://github.com/bmsteven/demo#readme",
+  "homepage": "https://github.com/bmsteven/create_pr#readme",
   "dependencies": {
     "@actions/core": "^1.6.0",
     "@actions/github": "^5.0.1",
