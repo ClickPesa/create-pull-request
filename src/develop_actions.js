@@ -16,9 +16,20 @@ const run = async () => {
       .slice(1)
       .join("/");
 
+    const compare_commits = await octokit.request(
+      `GET /repos/${context.payload?.repository?.full_name}/compare/staging...${branch_name}`,
+      {
+        owner: context.payload?.repository?.owner?.login,
+        repo: context.payload?.repository?.name,
+        base: "staging",
+        head: branch_name,
+      }
+    );
+    console.log("compare commit", compare_commits?.data?.commits);
+
     let commits = "";
 
-    context.payload?.commits?.forEach((e, i) => {
+    compare_commits?.data?.commits?.forEach((e, i) => {
       if (
         !e.message.includes("Merge") &&
         !e.message.includes("Merged") &&
@@ -44,16 +55,6 @@ const run = async () => {
         base: "staging",
       }
     );
-    const compare_commits = await octokit.request(
-      `GET /repos/${context.payload?.repository?.full_name}/compare/staging...${branch_name}`,
-      {
-        owner: context.payload?.repository?.owner?.login,
-        repo: context.payload?.repository?.name,
-        base: "staging",
-        head: branch_name,
-      }
-    );
-    console.log("compare commit", compare_commits);
     if (createpr?.data) {
       axios
         .post(
