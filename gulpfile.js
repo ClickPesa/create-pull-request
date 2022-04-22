@@ -87,10 +87,10 @@ gulp.task("getpulls", async () => {
     });
     console.log("pulls", pulls?.data);
 
-    const pull = await octokit.request("GET /repos/bmsteven/demo/pulls/16", {
+    const pull = await octokit.request("GET /repos/bmsteven/demo/pulls/18", {
       owner: "bmsteven",
       repo: "demo",
-      pull_number: "16",
+      pull_number: "18",
     });
     console.log("pull", pull?.data);
     // update pull request
@@ -109,27 +109,27 @@ gulp.task("getpulls", async () => {
       {
         owner: "bmsteven",
         repo: "demo",
-        pull_number: "16",
+        pull_number: "18",
       }
     );
     console.log("commits", commits?.data);
     // check if pull request was merged
-    // const checkPulls = await octokit.request(
-    //   "GET /repos/bmsteven/demo/pulls/16/merge",
-    //   {
-    //     owner: "bmsteven",
-    //     repo: "demo",
-    //     pull_number: "16",
-    //   }
-    // );
-    // console.log("checkPulls", checkPulls?.data);
+    const checkPulls = await octokit.request(
+      "GET /repos/bmsteven/demo/pulls/18/merge",
+      {
+        owner: "bmsteven",
+        repo: "demo",
+        pull_number: "18",
+      }
+    );
+    console.log("checkPulls", checkPulls?.data);
     // merge pull request
     const mergepr = await octokit.request(
       "PUT /repos/bmsteven/demo/pulls/16/merge",
       {
         owner: "bmsteven",
         repo: "demo",
-        pull_number: "16",
+        pull_number: "18",
       }
     );
     console.log("mergepr", mergepr?.data);
@@ -163,3 +163,82 @@ gulp.task("getpulls", async () => {
 //         run: echo "This step will be skipped on Monday and Wednesday"
 //       - name: Every time
 //         run: echo "This step will always run"
+
+// create pr action
+// name: Pull Request Action
+// on:
+//   push:
+//     branches:
+//       - feature/*
+//       - test/*
+//       - test
+
+// jobs:
+//   create-pull-request:
+//     runs-on: ubuntu-latest
+//     steps:
+//       - name: Check out repository code
+//         uses: actions/checkout@v2
+//       - name: pull-request
+//         uses: repo-sync/pull-request@v2
+//         with:
+//           destination_branch: "develop"
+//           github_token: ${{ secrets.GITHUB_TOKEN }}
+//           pr_label: "feature, automated pr"
+//           pr_title: "[Example] Simple demo"
+
+// name: test
+
+// on:
+//   pull_request:
+//     branches: [master, develop, staging]
+
+// jobs:
+//   build:
+//     runs-on: ubuntu-latest
+
+//     steps:
+//       - name: Check Out Repo
+//         uses: actions/checkout@v2
+
+//       # - name: 🔀 Merge Pull Request
+//       #   uses: BaharaJr/merge-pr@0.0.1
+//       #   with:
+//       #     GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
+// name: NodeJS with Gulp
+
+// on:
+//   push:
+//     branches: [ develop ]
+//     paths: ["gulpfile.js"]
+//   pull_request:
+//     branches: [ develop ]
+//     paths: ["gulpfile.js"]
+
+// jobs:
+//   build:
+//     runs-on: ubuntu-latest
+
+//     strategy:
+//       fail-fast: false
+//       matrix:
+//         node-version: [12.x, 14.x, 16.x]
+
+//     steps:
+//     - uses: actions/checkout@v3
+
+//     - name: Use Node.js ${{ matrix.node-version }}
+//       uses: actions/setup-node@v3
+//       with:
+//         node-version: ${{ matrix.node-version }}
+
+//     - name: Build
+//       run: npm install
+
+//     - name: gulp
+//       run: npm install -g gulp axios @octokit/core
+
+//     - name: notify
+//       # run: gulp createnotification --b ${{ secrets.SLACK_WEBHOOK_URL }}
+//       run: gulp getpulls --b ${{ secrets.TOKEN }}
