@@ -4,30 +4,37 @@ const core = require("@actions/core");
 
 const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
 const SLACK_WEBHOOK_URL = core.getInput("SLACK_WEBHOOK_URL");
+const DESTINATION_BRANCH = core.getInput("DESTINATION_BRANCH");
 const octokit = github.getOctokit(GITHUB_TOKEN);
 const { context = {} } = github;
 
 const run = async () => {
-  try {
-    const branch_name = context.payload?.head_commit?.message
-      ?.split("from")[1]
-      .split("\n")[0]
-      ?.split("/")
-      .slice(1)
-      .join("/");
+  const branch_name = context.payload?.head_commit?.message
+    ?.split("from")[1]
+    .split("\n")[0]
+    ?.split("/")
+    .slice(1)
+    .join("/");
 
+  // fetching commits
+  let commits = "";
+  try {
     const compare_commits = await octokit.request(
-      `GET /repos/${context.payload?.repository?.full_name}/compare/staging...${branch_name}`,
+      `GET /repos/${context.payload?.repository?.full_name}/compare/${DESTINATION_BRANCH}...${branch_name}`,
       {
         owner: context.payload?.repository?.owner?.login,
         repo: context.payload?.repository?.name,
-        base: "staging",
+        base: DESTINATION_BRANCH,
         head: branch_name,
       }
     );
-    console.log("compare commit", compare_commits?.data?.commits);
 
     let commits = "";
+
+    if (compare_commits?.data?.commits?.length === 0) {
+      commits = "";
+      return;
+    }
 
     compare_commits?.data?.commits?.forEach((e, i) => {
       if (
@@ -37,25 +44,23 @@ const run = async () => {
         !e?.commit?.message.includes("Skip")
       )
         commits =
-          i === 0 ? "> " + e.message : commits + "\n\n" + "> " + e.message;
+          i === 0
+            ? "> " + e.commit.message
+            : commits + "\n\n" + "> " + e.commit.message;
     });
+  } catch (error) {
+    console.log(error?.message);
+  }
 
-    // fetch pr from branch_name to staging to check if it exists
-    // if pr exists, update
-    // if not create
-
-    if (compare_commits?.data?.commits?.length === 0) {
-      console.log("no changes");
-      return;
-    }
-
-    const options = {
+  //   attempt to create PR
+  try {
+    let options = {
       blocks: [
         {
           type: "header",
           text: {
             type: "plain_text",
-            text: `:sparkles: PR was created from ${branch_name} to satging`,
+            text: ":sparkles:  New notification sent from github actions",
             emoji: true,
           },
         },
@@ -63,17 +68,13 @@ const run = async () => {
           type: "context",
           elements: [
             {
-              text: `commits`,
               type: "mrkdwn",
+              text: `> Pull request was created from ${branch_name} to ${DESTINATION_BRANCH}`,
             },
           ],
         },
-        {
-          type: "divider",
-        },
       ],
     };
-
     const createpr = await octokit.request(
       `POST /repos/${context.payload?.repository?.full_name}/pulls`,
       {
@@ -82,7 +83,7 @@ const run = async () => {
         title: branch_name,
         body: commits,
         head: branch_name,
-        base: "staging",
+        base: DESTINATION_BRANCH,
       }
     );
     if (createpr?.data) {
@@ -94,20 +95,67 @@ const run = async () => {
         .catch((error) => {
           console.log("FAILED: Send slack webhook", error);
         });
-    } else {
-      // update existing pr
-      console.log("pr exists");
-      axios
-        .post(
-          SLACK_WEBHOOK_URL,
-          JSON.stringify(`PR from ${branch_name} to staging already exist`)
-        )
-        .then((response) => {
-          console.log("SUCCEEDED: Sent slack webhook", response.data);
-        })
-        .catch((error) => {
-          console.log("FAILED: Send slack webhook", error);
-        });
+      return;
+    }
+  } catch (error) {
+    console.log("error", error?.message);
+  }
+
+  //   update PR
+  try {
+    const options = {
+      blocks: [
+        {
+          type: "header",
+          text: {
+            type: "plain_text",
+            text: ":sparkles:  New notification sent from github actions",
+            emoji: true,
+          },
+        },
+        {
+          type: "context",
+          elements: [
+            {
+              type: "mrkdwn",
+              text: `> Pull request was updated from ${branch_name} to ${DESTINATION_BRANCH}`,
+            },
+          ],
+        },
+      ],
+    };
+    //   fetching existing PR
+    const existing_pr = await octokit.rest.pulls.list({
+      owner: context.payload?.repository?.owner?.login,
+      repo: context.payload?.repository?.name,
+      state: "open",
+      head: branch_name,
+      base: DESTINATION_BRANCH,
+    });
+
+    if (existing_pr?.data) {
+      // update pr
+      const update_pr = await octokit.rest.pulls.update({
+        pull_number: existing_pr?.data[0].number,
+        owner: context.payload?.repository?.owner?.login,
+        repo: context.payload?.repository?.name,
+        title: branch_name,
+        body: commits,
+        head: branch_name,
+        base: DESTINATION_BRANCH,
+      });
+      if (update_pr.data) {
+        // send slack notification
+        axios
+          .post(SLACK_WEBHOOK_URL, JSON.stringify(options))
+          .then((response) => {
+            console.log("SUCCEEDED: Sent slack webhook", response.data);
+          })
+          .catch((error) => {
+            console.log("FAILED: Send slack webhook", error);
+          });
+        return;
+      }
     }
   } catch (error) {
     console.log("error", error?.message);
@@ -115,6 +163,3 @@ const run = async () => {
 };
 
 run();
-
-// $GITHUB_REF would look like (refs/pull/33/merge), $GITHUB_HEAD_REF would just store the source branch name while $GITHUB_BASE_REF would represent RP destination branch. Maybe you can update your answer to fallback to $GITHUB_HEAD_REF
-// ${GITHUB_REF##*/}
