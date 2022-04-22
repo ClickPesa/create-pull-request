@@ -40,7 +40,6 @@ const run = async () => {
         base: "staging",
       }
     );
-    console.log("createPr", createpr?.data);
     if (createpr?.data) {
       axios
         .post(
