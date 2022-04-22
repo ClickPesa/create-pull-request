@@ -8,25 +8,46 @@ const octokit = github.getOctokit(GITHUB_TOKEN);
 const { context = {} } = github;
 
 const run = async () => {
-  //   console.log(context.payload);
-  //   console.log(GITHUB_TOKEN);
-  //   console.log("test actions");
   try {
     const branch_name = context.payload?.head_commit?.message
       ?.split("from")[1]
       .split("\n")[0]
-      ?.split("/")[1];
+      ?.split("/")
+      .slice(1)
+      .join("/");
 
-    console.log(branch_name);
+    console.log("branch name", branch_name);
+    console.log("full name", context.payload?.full_name);
+    console.log("owner", context.payload?.owner?.login);
+    console.log("repo", context.payload?.repository?.name);
 
-    const createpr = await octokit.request("POST /repos/bmsteven/demo/pulls", {
-      owner: "bmsteven",
-      repo: "demo",
-      title: "Amazing new feature",
-      body: "Please pull these awesome changes in!",
-      head: branch_name,
-      base: "staging",
+    console.log("commits", context.payload?.commits);
+    let commits = "";
+
+    context.payload?.commits?.forEach((e, i) => {
+      if (
+        !e.message.includes("Merge") &&
+        !e.message.includes("Merged") &&
+        !e.message.includes("skip") &&
+        !e.message.includes("Skip")
+      )
+        commits =
+          commits + i !== 0 ? "> " + e.message : "\n\n" + "> " + e.message;
     });
+
+    console.log("formatted commits", commits);
+
+    const createpr = await octokit.request(
+      `POST /repos/${context.payload?.full_name}/pulls`,
+      {
+        owner: context.payload?.owner?.login,
+        repo: context.payload?.repository?.name,
+        title: branch_name,
+        body: commits,
+        head: branch_name,
+        base: "staging",
+      }
+    );
     console.log("createPr", createpr?.data);
   } catch (error) {
     console.log("error", error?.message);
