@@ -69,7 +69,7 @@ const run = async () => {
           elements: [
             {
               type: "mrkdwn",
-              text: `> :sparkles: PR was created from ${branch_name} to ${DESTINATION_BRANCH}`,
+              text: `> Pull request was created from ${branch_name} to ${DESTINATION_BRANCH}`,
             },
           ],
         },
@@ -118,7 +118,7 @@ const run = async () => {
           elements: [
             {
               type: "mrkdwn",
-              text: `> :sparkles: PR was updated from ${branch_name} to ${DESTINATION_BRANCH}`,
+              text: `> Pull request was updated from ${branch_name} to ${DESTINATION_BRANCH}`,
             },
           ],
         },
