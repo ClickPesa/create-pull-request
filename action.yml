@@ -1,0 +1,15 @@
+name: 'Automatically create pr to staging'
+description: 'Run develop actions'
+author: 'Benedict Steven'
+
+inputs:
+  GITHUB_TOKEN:
+    description: 'GitHub Token'
+    required: true
+runs:
+  using: 'node16'
+  main: 'develop_actions/index.js'
+
+branding:
+  icon: 'package'
+  color: 'gray-dark'
