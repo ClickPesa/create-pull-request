@@ -8,14 +8,16 @@ const octokit = github.getOctokit(GITHUB_TOKEN);
 const { context = {} } = github;
 
 const run = async () => {
-  try {
-    const branch_name = context.payload?.head_commit?.message
-      ?.split("from")[1]
-      .split("\n")[0]
-      ?.split("/")
-      .slice(1)
-      .join("/");
+  const branch_name = context.payload?.head_commit?.message
+    ?.split("from")[1]
+    .split("\n")[0]
+    ?.split("/")
+    .slice(1)
+    .join("/");
 
+  // fetching commits
+  let commits = "";
+  try {
     const compare_commits = await octokit.request(
       `GET /repos/${context.payload?.repository?.full_name}/compare/staging...${branch_name}`,
       {
@@ -27,6 +29,11 @@ const run = async () => {
     );
 
     let commits = "";
+
+    if (compare_commits?.data?.commits?.length === 0) {
+      commits = "";
+      return;
+    }
 
     compare_commits?.data?.commits?.forEach((e, i) => {
       if (
@@ -44,35 +51,33 @@ const run = async () => {
     // fetch pr from branch_name to staging to check if it exists
     // if pr exists, update
     // if not create
+  } catch (error) {
+    console.log(error?.message);
+  }
 
-    if (compare_commits?.data?.commits?.length === 0) {
-      console.log("no changes");
-      return;
-    }
-
+  //   attempt to create PR
+  try {
     const options = {
       blocks: [
-        // {
-        //   type: "header",
-        //   text: {
-        //     type: "plain_text",
-        //     text: `:sparkles: PR was created from ${branch_name} to staging`,
-        //     emoji: true,
-        //   },
-        // },
+        {
+          type: "header",
+          text: {
+            type: "plain_text",
+            text: ``,
+            emoji: true,
+          },
+        },
         {
           type: "context",
           elements: [
             {
               type: "mrkdwn",
-              text: `:sparkles: PR was created from ${branch_name} to staging`,
-              emoji: true,
+              text: `<:sparkles: PR was created from ${branch_name} to staging>`,
             },
           ],
         },
       ],
     };
-
     const createpr = await octokit.request(
       `POST /repos/${context.payload?.repository?.full_name}/pulls`,
       {
@@ -85,29 +90,55 @@ const run = async () => {
       }
     );
     if (createpr?.data) {
-      axios
-        .post(SLACK_WEBHOOK_URL, JSON.stringify(options))
-        .then((response) => {
-          console.log("SUCCEEDED: Sent slack webhook", response.data);
-        })
-        .catch((error) => {
-          console.log("FAILED: Send slack webhook", error);
-        });
+      console.log("pr created successfully");
+      //   axios
+      //     .post(SLACK_WEBHOOK_URL, JSON.stringify(options))
+      //     .then((response) => {
+      //       console.log("SUCCEEDED: Sent slack webhook", response.data);
+      //     })
+      //     .catch((error) => {
+      //       console.log("FAILED: Send slack webhook", error);
+      //     });
     } else {
       // update existing pr
       console.log("pr exists");
-      axios
-        .post(
-          SLACK_WEBHOOK_URL,
-          JSON.stringify(`PR from ${branch_name} to staging already exist`)
-        )
-        .then((response) => {
-          console.log("SUCCEEDED: Sent slack webhook", response.data);
-        })
-        .catch((error) => {
-          console.log("FAILED: Send slack webhook", error);
-        });
+      //   axios
+      //     .post(
+      //       SLACK_WEBHOOK_URL,
+      //       JSON.stringify(`PR from ${branch_name} to staging already exist`)
+      //     )
+      //     .then((response) => {
+      //       console.log("SUCCEEDED: Sent slack webhook", response.data);
+      //     })
+      //     .catch((error) => {
+      //       console.log("FAILED: Send slack webhook", error);
+      //     });
     }
+  } catch (error) {
+    console.log("error", error?.message);
+  }
+
+  //   update PR
+  try {
+    //   fetching existing PR
+    const existing_pr = await this.octokit.rest.pulls.list({
+      owner: context.payload?.repository?.owner?.login,
+      repo: context.payload?.repository?.name,
+      state: "open",
+      head: branch_name,
+      base: "staging",
+    });
+    console.log("existing PR", existing_pr);
+    // update pr
+    await this.octokit.rest.pulls.update({
+      pull_number: existing_pr?.data[0].number,
+      owner: context.payload?.repository?.owner?.login,
+      repo: context.payload?.repository?.name,
+      title: branch_name,
+      body: commits,
+      head: branch_name,
+      base: "staging",
+    });
   } catch (error) {
     console.log("error", error?.message);
   }
