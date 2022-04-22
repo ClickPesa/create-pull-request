@@ -4,6 +4,7 @@ const core = require("@actions/core");
 
 const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
 const SLACK_WEBHOOK_URL = core.getInput("SLACK_WEBHOOK_URL");
+const DESTINATION_BRANCH = core.getInput("DESTINATION_BRANCH");
 const octokit = github.getOctokit(GITHUB_TOKEN);
 const { context = {} } = github;
 
@@ -19,11 +20,11 @@ const run = async () => {
   let commits = "";
   try {
     const compare_commits = await octokit.request(
-      `GET /repos/${context.payload?.repository?.full_name}/compare/staging...${branch_name}`,
+      `GET /repos/${context.payload?.repository?.full_name}/compare/${DESTINATION_BRANCH}...${branch_name}`,
       {
         owner: context.payload?.repository?.owner?.login,
         repo: context.payload?.repository?.name,
-        base: "staging",
+        base: DESTINATION_BRANCH,
         head: branch_name,
       }
     );
@@ -47,10 +48,6 @@ const run = async () => {
             ? "> " + e.commit.message
             : commits + "\n\n" + "> " + e.commit.message;
     });
-
-    // fetch pr from branch_name to staging to check if it exists
-    // if pr exists, update
-    // if not create
   } catch (error) {
     console.log(error?.message);
   }
@@ -60,11 +57,19 @@ const run = async () => {
     let options = {
       blocks: [
         {
+          type: "header",
+          text: {
+            type: "plain_text",
+            text: ":sparkles:  New notification sent from github actions",
+            emoji: true,
+          },
+        },
+        {
           type: "context",
           elements: [
             {
               type: "mrkdwn",
-              text: `<:sparkles: PR was created from ${branch_name} to staging>`,
+              text: `> :sparkles: PR was created from ${branch_name} to ${DESTINATION_BRANCH}`,
             },
           ],
         },
@@ -78,7 +83,7 @@ const run = async () => {
         title: branch_name,
         body: commits,
         head: branch_name,
-        base: "staging",
+        base: DESTINATION_BRANCH,
       }
     );
     if (createpr?.data) {
@@ -101,11 +106,19 @@ const run = async () => {
     const options = {
       blocks: [
         {
+          type: "header",
+          text: {
+            type: "plain_text",
+            text: ":sparkles:  New notification sent from github actions",
+            emoji: true,
+          },
+        },
+        {
           type: "context",
           elements: [
             {
               type: "mrkdwn",
-              text: `<:sparkles: PR was updated from ${branch_name} to staging>`,
+              text: `> :sparkles: PR was updated from ${branch_name} to ${DESTINATION_BRANCH}`,
             },
           ],
         },
@@ -117,7 +130,7 @@ const run = async () => {
       repo: context.payload?.repository?.name,
       state: "open",
       head: branch_name,
-      base: "staging",
+      base: DESTINATION_BRANCH,
     });
 
     if (existing_pr?.data) {
@@ -129,7 +142,7 @@ const run = async () => {
         title: branch_name,
         body: commits,
         head: branch_name,
-        base: "staging",
+        base: DESTINATION_BRANCH,
       });
       if (update_pr.data) {
         // send slack notification
@@ -150,6 +163,3 @@ const run = async () => {
 };
 
 run();
-
-// $GITHUB_REF would look like (refs/pull/33/merge), $GITHUB_HEAD_REF would just store the source branch name while $GITHUB_BASE_REF would represent RP destination branch. Maybe you can update your answer to fallback to $GITHUB_HEAD_REF
-// ${GITHUB_REF##*/}
