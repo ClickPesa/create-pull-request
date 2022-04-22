@@ -25,7 +25,7 @@ const run = async () => {
         head: branch_name,
       }
     );
-    console.log("compare commit", compare_commits);
+    console.log("compare commit", compare_commits?.data?.commits);
 
     let commits = "";
 
