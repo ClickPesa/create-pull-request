@@ -9,6 +9,9 @@ inputs:
   SLACK_WEBHOOK_URL:
     description: 'Slack webhook'
     required: true
+  DESTINATION_BRANCH:
+    description: 'destination branch'
+    required: true
 runs:
   using: 'node16'
   main: './src/develop_actions.js'
