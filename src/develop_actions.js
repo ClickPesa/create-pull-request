@@ -43,7 +43,7 @@ const run = async () => {
         owner: context.payload?.owner?.login,
         repo: context.payload?.repository?.name,
         title: branch_name,
-        body: "Please pull these awesome changes in!",
+        body: commits,
         head: branch_name,
         base: "staging",
       }
