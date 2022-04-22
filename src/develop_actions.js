@@ -12,21 +12,21 @@ const run = async () => {
   //   console.log(GITHUB_TOKEN);
   //   console.log("test actions");
   try {
-    const branch_name = context.payload?.response?.head_commit?.message
+    const branch_name = context.payload?.head_commit?.message
       ?.split("from")[1]
       .split("\n")[0];
 
     console.log(branch_name);
 
-    // const createpr = await octokit.request("POST /repos/bmsteven/demo/pulls", {
-    //   owner: "bmsteven",
-    //   repo: "demo",
-    //   title: "Amazing new feature",
-    //   body: "Please pull these awesome changes in!",
-    //   head: branch_name,
-    //   base: "staging",
-    // });
-    // console.log("createPr", createpr?.data);
+    const createpr = await octokit.request("POST /repos/bmsteven/demo/pulls", {
+      owner: "bmsteven",
+      repo: "demo",
+      title: "Amazing new feature",
+      body: "Please pull these awesome changes in!",
+      head: branch_name,
+      base: "staging",
+    });
+    console.log("createPr", createpr?.data);
   } catch (error) {
     console.log("error", error?.message);
   }
