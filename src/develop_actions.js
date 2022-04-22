@@ -4,6 +4,7 @@ const core = require("@actions/core");
 // const response = require("../res");
 
 const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
+const SLACK_WEBHOOK_URL = core.getInput("SLACK_WEBHOOK_URL");
 const octokit = github.getOctokit(GITHUB_TOKEN);
 const { context = {} } = github;
 
@@ -41,6 +42,21 @@ const run = async () => {
       }
     );
     console.log("createPr", createpr?.data);
+    if (createpr?.data) {
+      axios
+        .post(
+          `${SLACK_WEBHOOK_URL}`,
+          `PR from ${branch_name} to staging was created successfully`
+        )
+        .then((response) => {
+          console.log("SUCCEEDED: Sent slack webhook", response.data);
+          resolve(response.data);
+        })
+        .catch((error) => {
+          console.log("FAILED: Send slack webhook", error);
+          reject(new Error("FAILED: Send slack webhook"));
+        });
+    }
   } catch (error) {
     console.log("error", error?.message);
   }
