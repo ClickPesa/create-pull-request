@@ -131,18 +131,18 @@ const run = async () => {
         head: branch_name,
         base: "staging",
       });
-    }
-    if (update_pr.data) {
-      // send slack notification
-      axios
-        .post(SLACK_WEBHOOK_URL, JSON.stringify(options))
-        .then((response) => {
-          console.log("SUCCEEDED: Sent slack webhook", response.data);
-        })
-        .catch((error) => {
-          console.log("FAILED: Send slack webhook", error);
-        });
-      return;
+      if (update_pr.data) {
+        // send slack notification
+        axios
+          .post(SLACK_WEBHOOK_URL, JSON.stringify(options))
+          .then((response) => {
+            console.log("SUCCEEDED: Sent slack webhook", response.data);
+          })
+          .catch((error) => {
+            console.log("FAILED: Send slack webhook", error);
+          });
+        return;
+      }
     }
   } catch (error) {
     console.log("error", error?.message);
