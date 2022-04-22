@@ -52,25 +52,23 @@ const run = async () => {
 
     const options = {
       blocks: [
-        {
-          type: "header",
-          text: {
-            type: "plain_text",
-            text: `:sparkles: PR was created from ${branch_name} to staging`,
-            emoji: true,
-          },
-        },
+        // {
+        //   type: "header",
+        //   text: {
+        //     type: "plain_text",
+        //     text: `:sparkles: PR was created from ${branch_name} to staging`,
+        //     emoji: true,
+        //   },
+        // },
         {
           type: "context",
           elements: [
             {
-              text: commits,
               type: "mrkdwn",
+              text: `:sparkles: PR was created from ${branch_name} to staging`,
+              emoji: true,
             },
           ],
-        },
-        {
-          type: "divider",
         },
       ],
     };
