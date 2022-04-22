@@ -16,13 +16,6 @@ const run = async () => {
       .slice(1)
       .join("/");
 
-    //   context
-    console.log(context.payload);
-    console.log("branch name", branch_name);
-    console.log("full name", context.payload?.full_name);
-    console.log("owner", context.payload?.owner?.login);
-    console.log("repo", context.payload?.repository?.name);
-
     let commits = "";
 
     context.payload?.commits?.forEach((e, i) => {
@@ -36,12 +29,10 @@ const run = async () => {
           i === 0 ? "> " + e.message : commits + "\n\n" + "> " + e.message;
     });
 
-    console.log(commits);
-
     const createpr = await octokit.request(
-      `POST /repos/${context.payload?.full_name}/pulls`,
+      `POST /repos/${context.payload?.repository?.full_name}/pulls`,
       {
-        owner: context.payload?.owner?.login,
+        owner: context.payload?.repository?.owner?.login,
         repo: context.payload?.repository?.name,
         title: branch_name,
         body: commits,
