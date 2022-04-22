@@ -1,7 +1,7 @@
 const axios = require("axios");
 const github = require("@actions/github");
 const core = require("@actions/core");
-const response = require("../res");
+// const response = require("../res");
 
 const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
 const octokit = github.getOctokit(GITHUB_TOKEN);
@@ -21,7 +21,21 @@ const run = async () => {
     console.log("owner", context.payload?.owner?.login);
     console.log("repo", context.payload?.repository?.name);
 
-    // fetch and format commits
+    console.log("commits", context.payload?.commits);
+    let commits = "";
+
+    context.payload?.commits?.forEach((e, i) => {
+      if (
+        !e.message.includes("Merge") &&
+        !e.message.includes("Merged") &&
+        !e.message.includes("skip") &&
+        !e.message.includes("Skip")
+      )
+        commits =
+          commits + i !== 0 ? "> " + e.message : "\n\n" + "> " + e.message;
+    });
+
+    console.log("formatted commits", commits);
 
     const createpr = await octokit.request(
       `POST /repos/${context.payload?.full_name}/pulls`,
