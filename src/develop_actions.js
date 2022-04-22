@@ -1,32 +1,39 @@
 const axios = require("axios");
 const github = require("@actions/github");
 const core = require("@actions/core");
-// const response = require("../res");
+const response = require("../res");
 
 const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
 const octokit = github.getOctokit(GITHUB_TOKEN);
 const { context = {} } = github;
 
 const run = async () => {
-  //   console.log(context.payload);
-  //   console.log(GITHUB_TOKEN);
-  //   console.log("test actions");
   try {
     const branch_name = context.payload?.head_commit?.message
       ?.split("from")[1]
       .split("\n")[0]
-      ?.split("/")[1];
+      ?.split("/")
+      .slice(1)
+      .join("/");
 
-    console.log(branch_name);
+    console.log("branch name", branch_name);
+    console.log("full name", context.payload?.full_name);
+    console.log("owner", context.payload?.owner?.login);
+    console.log("repo", context.payload?.repository?.name);
 
-    const createpr = await octokit.request("POST /repos/bmsteven/demo/pulls", {
-      owner: "bmsteven",
-      repo: "demo",
-      title: "Amazing new feature",
-      body: "Please pull these awesome changes in!",
-      head: branch_name,
-      base: "staging",
-    });
+    // fetch and format commits
+
+    const createpr = await octokit.request(
+      `POST /repos/${context.payload?.full_name}/pulls`,
+      {
+        owner: context.payload?.owner?.login,
+        repo: context.payload?.repository?.name,
+        title: branch_name,
+        body: "Please pull these awesome changes in!",
+        head: branch_name,
+        base: "staging",
+      }
+    );
     console.log("createPr", createpr?.data);
   } catch (error) {
     console.log("error", error?.message);
