@@ -44,7 +44,16 @@ const run = async () => {
         base: "staging",
       }
     );
-    console.log(createpr?.data);
+    const compare_commits = await octokit.request(
+      `GET /repos/${context.payload?.repository?.full_name}/compare/staging...${branch_name}`,
+      {
+        owner: context.payload?.repository?.owner?.login,
+        repo: context.payload?.repository?.name,
+        base: "staging",
+        head: branch_name,
+      }
+    );
+    console.log("compare commits", compare_commits);
     if (createpr?.data) {
       axios
         .post(
@@ -74,16 +83,6 @@ const run = async () => {
           console.log("FAILED: Send slack webhook", error);
         });
     }
-    const compare_commits = await octokit.request(
-      `GET /repos/${context.payload?.repository?.full_name}/compare/staging...${branch_name}`,
-      {
-        owner: context.payload?.repository?.owner?.login,
-        repo: context.payload?.repository?.name,
-        base: "staging",
-        head: branch_name,
-      }
-    );
-    console.log(compare_commits);
   } catch (error) {
     console.log("error", error?.message);
   }
