@@ -16,14 +16,25 @@ const run = async () => {
       .slice(1)
       .join("/");
 
+    const compare_commits = await octokit.request(
+      `GET /repos/${context.payload?.repository?.full_name}/compare/staging...${branch_name}`,
+      {
+        owner: context.payload?.repository?.owner?.login,
+        repo: context.payload?.repository?.name,
+        base: "staging",
+        head: branch_name,
+      }
+    );
+    console.log("compare commit", compare_commits?.data?.commits);
+
     let commits = "";
 
-    context.payload?.commits?.forEach((e, i) => {
+    compare_commits?.data?.commits?.forEach((e, i) => {
       if (
-        !e.message.includes("Merge") &&
-        !e.message.includes("Merged") &&
-        !e.message.includes("skip") &&
-        !e.message.includes("Skip")
+        !e?.commit?.message.includes("Merge") &&
+        !e?.commit?.message.includes("Merged") &&
+        !e?.commit?.message.includes("skip") &&
+        !e?.commit?.message.includes("Skip")
       )
         commits =
           i === 0 ? "> " + e.message : commits + "\n\n" + "> " + e.message;
@@ -32,6 +43,36 @@ const run = async () => {
     // fetch pr from branch_name to staging to check if it exists
     // if pr exists, update
     // if not create
+
+    if (compare_commits?.data?.commits?.length === 0) {
+      console.log("no changes");
+      return;
+    }
+
+    const options = {
+      blocks: [
+        {
+          type: "header",
+          text: {
+            type: "plain_text",
+            text: `:sparkles: PR was created from ${branch_name} to satging`,
+            emoji: true,
+          },
+        },
+        {
+          type: "context",
+          elements: [
+            {
+              text: `commits`,
+              type: "mrkdwn",
+            },
+          ],
+        },
+        {
+          type: "divider",
+        },
+      ],
+    };
 
     const createpr = await octokit.request(
       `POST /repos/${context.payload?.repository?.full_name}/pulls`,
@@ -44,24 +85,9 @@ const run = async () => {
         base: "staging",
       }
     );
-    const compare_commits = await octokit.request(
-      `GET /repos/${context.payload?.repository?.full_name}/compare/staging...${branch_name}`,
-      {
-        owner: context.payload?.repository?.owner?.login,
-        repo: context.payload?.repository?.name,
-        base: "staging",
-        head: branch_name,
-      }
-    );
-    console.log("compare commit", compare_commits);
     if (createpr?.data) {
       axios
-        .post(
-          SLACK_WEBHOOK_URL,
-          JSON.stringify(
-            `PR from ${branch_name} to staging was created successfully`
-          )
-        )
+        .post(SLACK_WEBHOOK_URL, JSON.stringify(options))
         .then((response) => {
           console.log("SUCCEEDED: Sent slack webhook", response.data);
         })
