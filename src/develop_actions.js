@@ -14,7 +14,8 @@ const run = async () => {
   try {
     const branch_name = context.payload?.head_commit?.message
       ?.split("from")[1]
-      .split("\n")[0];
+      .split("\n")[0]
+      ?.split("/")[1];
 
     console.log(branch_name);
 
