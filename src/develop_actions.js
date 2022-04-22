@@ -121,7 +121,7 @@ const run = async () => {
   //   update PR
   try {
     //   fetching existing PR
-    const existing_pr = await this.octokit.rest.pulls.list({
+    const existing_pr = await octokit.rest.pulls.list({
       owner: context.payload?.repository?.owner?.login,
       repo: context.payload?.repository?.name,
       state: "open",
@@ -130,7 +130,7 @@ const run = async () => {
     });
     console.log("existing PR", existing_pr);
     // update pr
-    await this.octokit.rest.pulls.update({
+    const update_pr = await octokit.rest.pulls.update({
       pull_number: existing_pr?.data[0].number,
       owner: context.payload?.repository?.owner?.login,
       repo: context.payload?.repository?.name,
@@ -139,6 +139,7 @@ const run = async () => {
       head: branch_name,
       base: "staging",
     });
+    console.log(update_pr?.data);
   } catch (error) {
     console.log("error", error?.message);
   }
