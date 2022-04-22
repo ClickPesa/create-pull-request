@@ -53,7 +53,7 @@ const run = async () => {
         head: branch_name,
       }
     );
-    console.log("compare commits", compare_commits);
+    console.log("compare commit", compare_commits);
     if (createpr?.data) {
       axios
         .post(
