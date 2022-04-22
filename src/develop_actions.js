@@ -60,11 +60,19 @@ const run = async () => {
     let options = {
       blocks: [
         {
+          type: "header",
+          text: {
+            type: "plain_text",
+            text: ":sparkles:  New notification sent from github actions",
+            emoji: true,
+          },
+        },
+        {
           type: "context",
           elements: [
             {
               type: "mrkdwn",
-              text: `<:sparkles: PR was created from ${branch_name} to staging>`,
+              text: `> :sparkles: PR was created from ${branch_name} to staging`,
             },
           ],
         },
@@ -101,11 +109,19 @@ const run = async () => {
     const options = {
       blocks: [
         {
+          type: "header",
+          text: {
+            type: "plain_text",
+            text: ":sparkles:  New notification sent from github actions",
+            emoji: true,
+          },
+        },
+        {
           type: "context",
           elements: [
             {
               type: "mrkdwn",
-              text: `<:sparkles: PR was updated from ${branch_name} to staging>`,
+              text: `> :sparkles: PR was updated from ${branch_name} to staging`,
             },
           ],
         },
@@ -150,6 +166,3 @@ const run = async () => {
 };
 
 run();
-
-// $GITHUB_REF would look like (refs/pull/33/merge), $GITHUB_HEAD_REF would just store the source branch name while $GITHUB_BASE_REF would represent RP destination branch. Maybe you can update your answer to fallback to $GITHUB_HEAD_REF
-// ${GITHUB_REF##*/}
