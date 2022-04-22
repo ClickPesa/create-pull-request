@@ -40,6 +40,7 @@ const run = async () => {
         base: "staging",
       }
     );
+    console.log(createpr?.data);
     if (createpr?.data) {
       axios
         .post(
@@ -47,6 +48,21 @@ const run = async () => {
           JSON.stringify(
             `PR from ${branch_name} to staging was created successfully`
           )
+        )
+        .then((response) => {
+          console.log("SUCCEEDED: Sent slack webhook", response.data);
+        })
+        .catch((error) => {
+          console.log("FAILED: Send slack webhook", error);
+        });
+    } else {
+      // fetch pr from branch_name to staging
+      // update existing pr
+      console.log("pr exists");
+      axios
+        .post(
+          SLACK_WEBHOOK_URL,
+          JSON.stringify(`PR from ${branch_name} to staging already exist`)
         )
         .then((response) => {
           console.log("SUCCEEDED: Sent slack webhook", response.data);
