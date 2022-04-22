@@ -13,7 +13,7 @@ jobs:
       - name: Build
         run: npm install
 
-      - name: gulp
+      - name: install packages
         run: npm install -g gulp axios @octokit/core @actions/github @actions/core
       - uses: ./
         with:
