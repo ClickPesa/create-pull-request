@@ -1,0 +1,18 @@
+name: 'Automatically create pr to staging'
+description: 'Run develop actions'
+author: 'Benedict Steven'
+
+inputs:
+  GITHUB_TOKEN:
+    description: 'GitHub Token'
+    required: true
+  SLACK_WEBHOOK_URL:
+    description: 'Slack webhook'
+    required: true
+runs:
+  using: 'node16'
+  main: './src/develop_actions.js'
+
+branding:
+  icon: 'package'
+  color: 'gray-dark'
