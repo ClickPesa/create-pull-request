@@ -29,6 +29,10 @@ const run = async () => {
           i === 0 ? "> " + e.message : commits + "\n\n" + "> " + e.message;
     });
 
+    // fetch pr from branch_name to staging to check if it exists
+    // if pr exists, update
+    // if not create
+
     const createpr = await octokit.request(
       `POST /repos/${context.payload?.repository?.full_name}/pulls`,
       {
@@ -56,7 +60,6 @@ const run = async () => {
           console.log("FAILED: Send slack webhook", error);
         });
     } else {
-      // fetch pr from branch_name to staging
       // update existing pr
       console.log("pr exists");
       axios
