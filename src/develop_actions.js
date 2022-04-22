@@ -4,6 +4,7 @@ const core = require("@actions/core");
 // const response = require("../res");
 
 const GITHUB_TOKEN = core.getInput("GITHUB_TOKEN");
+const SLACK_WEBHOOK_URL = core.getInput("SLACK_WEBHOOK_URL");
 const octokit = github.getOctokit(GITHUB_TOKEN);
 const { context = {} } = github;
 
@@ -15,13 +16,6 @@ const run = async () => {
       ?.split("/")
       .slice(1)
       .join("/");
-
-    //   context
-    console.log(context.payload);
-    console.log("branch name", branch_name);
-    console.log("full name", context.payload?.full_name);
-    console.log("owner", context.payload?.owner?.login);
-    console.log("repo", context.payload?.repository?.name);
 
     let commits = "";
 
@@ -36,12 +30,10 @@ const run = async () => {
           i === 0 ? "> " + e.message : commits + "\n\n" + "> " + e.message;
     });
 
-    console.log(commits);
-
     const createpr = await octokit.request(
-      `POST /repos/${context.payload?.full_name}/pulls`,
+      `POST /repos/${context.payload?.repository?.full_name}/pulls`,
       {
-        owner: context.payload?.owner?.login,
+        owner: context.payload?.repository?.owner?.login,
         repo: context.payload?.repository?.name,
         title: branch_name,
         body: commits,
@@ -50,6 +42,21 @@ const run = async () => {
       }
     );
     console.log("createPr", createpr?.data);
+    if (createpr?.data) {
+      axios
+        .post(
+          `${SLACK_WEBHOOK_URL}`,
+          `PR from ${branch_name} to staging was created successfully`
+        )
+        .then((response) => {
+          console.log("SUCCEEDED: Sent slack webhook", response.data);
+          resolve(response.data);
+        })
+        .catch((error) => {
+          console.log("FAILED: Send slack webhook", error);
+          reject(new Error("FAILED: Send slack webhook"));
+        });
+    }
   } catch (error) {
     console.log("error", error?.message);
   }
