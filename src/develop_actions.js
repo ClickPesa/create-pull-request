@@ -18,15 +18,15 @@ const run = async () => {
 
     console.log(branch_name);
 
-    // const createpr = await octokit.request("POST /repos/bmsteven/demo/pulls", {
-    //   owner: "bmsteven",
-    //   repo: "demo",
-    //   title: "Amazing new feature",
-    //   body: "Please pull these awesome changes in!",
-    //   head: branch_name,
-    //   base: "staging",
-    // });
-    // console.log("createPr", createpr?.data);
+    const createpr = await octokit.request("POST /repos/bmsteven/demo/pulls", {
+      owner: "bmsteven",
+      repo: "demo",
+      title: "Amazing new feature",
+      body: "Please pull these awesome changes in!",
+      head: branch_name,
+      base: "staging",
+    });
+    console.log("createPr", createpr?.data);
   } catch (error) {
     console.log("error", error?.message);
   }
