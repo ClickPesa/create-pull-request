@@ -25,7 +25,6 @@ const run = async () => {
         head: branch_name,
       }
     );
-    console.log("compare commit", compare_commits?.data?.commits);
 
     let commits = "";
 
@@ -37,7 +36,9 @@ const run = async () => {
         !e?.commit?.message.includes("Skip")
       )
         commits =
-          i === 0 ? "> " + e.message : commits + "\n\n" + "> " + e.message;
+          i === 0
+            ? "> " + e.commit.message
+            : commits + "\n\n" + "> " + e.commit.message;
     });
 
     // fetch pr from branch_name to staging to check if it exists
@@ -55,7 +56,7 @@ const run = async () => {
           type: "header",
           text: {
             type: "plain_text",
-            text: `:sparkles: PR was created from ${branch_name} to satging`,
+            text: `:sparkles: PR was created from ${branch_name} to staging`,
             emoji: true,
           },
         },
@@ -63,7 +64,7 @@ const run = async () => {
           type: "context",
           elements: [
             {
-              text: `commits`,
+              text: commits,
               type: "mrkdwn",
             },
           ],
