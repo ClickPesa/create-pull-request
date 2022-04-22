@@ -9,7 +9,7 @@ const { context = {} } = github;
 const run = async () => {
   console.log(context.payload);
   console.log(GITHUB_TOKEN);
-  console.log("actions");
+  console.log("test actions");
 };
 
 run();
