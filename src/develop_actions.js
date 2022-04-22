@@ -44,6 +44,36 @@ const run = async () => {
     // if pr exists, update
     // if not create
 
+    if (compare_commits?.data?.commits?.length === 0) {
+      console.log("no changes");
+      return;
+    }
+
+    const options = {
+      blocks: [
+        {
+          type: "header",
+          text: {
+            type: "plain_text",
+            text: `:sparkles: PR was created from ${branch_name} to satging`,
+            emoji: true,
+          },
+        },
+        {
+          type: "context",
+          elements: [
+            {
+              text: `commits`,
+              type: "mrkdwn",
+            },
+          ],
+        },
+        {
+          type: "divider",
+        },
+      ],
+    };
+
     const createpr = await octokit.request(
       `POST /repos/${context.payload?.repository?.full_name}/pulls`,
       {
@@ -57,12 +87,7 @@ const run = async () => {
     );
     if (createpr?.data) {
       axios
-        .post(
-          SLACK_WEBHOOK_URL,
-          JSON.stringify(
-            `PR from ${branch_name} to staging was created successfully`
-          )
-        )
+        .post(SLACK_WEBHOOK_URL, JSON.stringify(options))
         .then((response) => {
           console.log("SUCCEEDED: Sent slack webhook", response.data);
         })
