@@ -14,7 +14,7 @@ inputs:
     required: true
 runs:
   using: 'node16'
-  main: './src/develop_actions.js'
+  main: './src/actions.js'
 
 branding:
   icon: 'package'
