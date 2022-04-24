@@ -12407,14 +12407,16 @@ const { context = {} } = github;
 
 const run = async () => {
   // check branch;
-  const branch_name = context.payload?.head_commit?.message
+  let branch_name = context.payload?.head_commit?.message
     ?.split("from")[1]
-    .split("\n")[0]
+    ?.split("\n")[0]
     ?.split("/")
     ?.slice(1)
     ?.join("/");
 
-  console.log(branch_name);
+  if (branch_name === "" || branch_name === undefined || branch_name === null) {
+    branch_name = context.payload.ref?.replace("refs/heads/", "");
+  }
 
   // fetching commits
   let commits = "";
