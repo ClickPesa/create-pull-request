@@ -12407,7 +12407,7 @@ const { context = {} } = github;
 
 const run = async () => {
   console.log(context.payload);
-  check;
+  // check branch;
   const branch_name = context.payload?.head_commit?.message
     ?.split("from")[1]
     .split("\n")[0]
