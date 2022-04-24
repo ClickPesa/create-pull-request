@@ -9,7 +9,6 @@ const octokit = github.getOctokit(GITHUB_TOKEN);
 const { context = {} } = github;
 
 const run = async () => {
-  // check branch;
   let branch_name = context.payload?.head_commit?.message
     ?.split("from")[1]
     ?.split("\n")[0]
