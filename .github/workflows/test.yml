@@ -13,8 +13,6 @@ jobs:
       - name: Build
         run: npm install
 
-      - name: install packages
-        run: npm install -g axios @octokit/core @actions/github @actions/core
       - uses: ./
         with:
           GITHUB_TOKEN: ${{secrets.TOKEN}}
