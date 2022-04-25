@@ -20,6 +20,8 @@ const run = async () => {
     branch_name = context.payload.ref?.replace("refs/heads/", "");
   }
 
+  console.log(branch_name);
+
   // fetching commits
   let commits = "";
   try {
