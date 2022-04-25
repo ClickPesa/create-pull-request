@@ -9,21 +9,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/checkout@v2
         with:
-          ref: develop
+          token: ${{ secrets.TOKEN }} 
+          # ref: develop
+      - name: fetch all branches
+        run: |
+          
 
-      #  push changes to develop
+      - name: pull latest develop branch changes
+        run: git pull origin develop
+
       - name: set global attributes
         run: |
           git config --global user.email "bmsteve96@gmail.com"
           git config --global user.name "Benedict Steven"
           git remote set-url origin https://x-access-token:${{ secrets.TOKEN }}@github.com/${{ github.repository }}
       - name: Build
-        run: npm install
+        run: |
+          git fetch --all
+          git checkout develop
+          npm install
+          
 
       - name: Build
-        run: npm run build
+        run: |
+          git fetch --all
+          git checkout develop
+          npm run build
 
       - name: bump version actions
         uses: bmsteven/bump-version@1.0.3
