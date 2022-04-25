@@ -14,8 +14,7 @@ jobs:
           # ref: develop
       - name: fetch all branches
         run: |
-          git fetch --all
-          git checkout develop
+          
 
       - name: pull latest develop branch changes
         run: git pull origin develop
@@ -26,10 +25,17 @@ jobs:
           git config --global user.name "Benedict Steven"
           git remote set-url origin https://x-access-token:${{ secrets.TOKEN }}@github.com/${{ github.repository }}
       - name: Build
-        run: npm install
+        run: |
+          git fetch --all
+          git checkout develop
+          npm install
+          
 
       - name: Build
-        run: npm run build
+        run: |
+          git fetch --all
+          git checkout develop
+          npm run build
 
       - name: bump version actions
         uses: bmsteven/bump-version@1.0.3
