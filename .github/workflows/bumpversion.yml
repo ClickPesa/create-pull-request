@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        run: git pull origin develop
+      - run: git pull origin develop
         with:
           token: ${{ secrets.TOKEN }} 
-          ref: 'develop'
+          ref: develop
       - name: pull latest develop branch changes
         run: git pull
 
