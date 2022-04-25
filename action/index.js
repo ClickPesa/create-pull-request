@@ -12417,8 +12417,6 @@ const run = async () => {
     branch_name = context.payload.ref?.replace("refs/heads/", "");
   }
 
-  console.log(branch_name);
-
   // fetching commits
   let commits = "";
   try {
@@ -12564,7 +12562,6 @@ const run = async () => {
 run();
 
 const createorupdatepr = async ({ branch, owner, repo, body, full_name }) => {
-  console.log("head-branch", branch);
   try {
     const existing_pr = await octokit.rest.pulls.list({
       owner,
