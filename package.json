@@ -1,12 +1,12 @@
 {
   "name": "automate-pull-request",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "build": "rm -rf action && ncc build src/actions.js -o action",
     "start": "babel-node src/actions.js",
-    "deploy":"cd src && zip -r -D test.zip .",
+    "deploy": "cd src && zip -r -D test.zip .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
