@@ -15,7 +15,6 @@ jobs:
       - name: pull latest develop branch changes
         run: git pull origin develop
 
-      #  push changes to develop
       - name: set global attributes
         run: |
           git config --global user.email "bmsteve96@gmail.com"
