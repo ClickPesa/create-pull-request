@@ -20,19 +20,27 @@ jobs:
           git remote set-url origin https://x-access-token:${{ secrets.TOKEN }}@github.com/${{ github.repository }}
       - name: Build
         run: npm install
-          
+
+      - name: get version
+        run: |
+          PACKAGE_VERSION=$(cat ./package.json | jq '.version' | tr -d '"') 
+          echo "::set-output name=PACKAGE_VERSION::$(cat ./package.json | jq '.version' | tr -d '"')"
+          echo $PACKAGE_VERSION
+        id: version
 
       - name: Build
         run: npm run build
 
+      - name: test version
+        run: echo ${{ steps.version.outputs.PACKAGE_VERSION }}
+
       - name: bump version actions
-        uses: bmsteven/bump-version@1.0.3
+        uses: bmsteven/bump-version@1.0.4
         with: 
           GITHUB_TOKEN: ${{secrets.TOKEN}}
           SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
-          TARGET_BRANCH: master
-          DESTINATION_BRANCH: develop
           APP_NAME: Engineering-blog
+          PACKAGE_VERSION: ${{ steps.version.outputs.PACKAGE_VERSION }}
 
       - name: update develop branch
         run: |
