@@ -56,6 +56,8 @@ const run = async () => {
     console.log(error?.message);
   }
 
+  console.log(commits);
+
   //   attempt to create PR
   try {
     let options = {
@@ -79,23 +81,27 @@ const run = async () => {
         },
       ],
     };
-    const createpr = await createorupdatepr({
-      branch: branch_name,
-      body: commits,
-      owner: context.payload?.repository?.owner?.login,
-      repo: context.payload?.repository?.name,
-      full_name: context.payload?.repository?.full_name,
-    });
-    if (createpr?.data) {
-      axios
-        .post(SLACK_WEBHOOK_URL, JSON.stringify(options))
-        .then((response) => {
-          console.log("SUCCEEDED: Sent slack webhook", response.data);
-        })
-        .catch((error) => {
-          console.log("FAILED: Send slack webhook", error);
-        });
-      return;
+    if (commits != "") {
+      const createpr = await createorupdatepr({
+        branch: branch_name,
+        body: commits,
+        owner: context.payload?.repository?.owner?.login,
+        repo: context.payload?.repository?.name,
+        full_name: context.payload?.repository?.full_name,
+      });
+      if (createpr?.data) {
+        axios
+          .post(SLACK_WEBHOOK_URL, JSON.stringify(options))
+          .then((response) => {
+            console.log("SUCCEEDED: Sent slack webhook", response.data);
+          })
+          .catch((error) => {
+            console.log("FAILED: Send slack webhook", error);
+          });
+        return;
+      }
+    } else {
+      console.log("No commits to create this PR");
     }
   } catch (error) {
     console.log("error", error?.message);
