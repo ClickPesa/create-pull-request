@@ -100,7 +100,6 @@ const run = async () => {
   } catch (error) {
     console.log("error", error?.message);
   }
-
   //   update PR
   try {
     const options = {
