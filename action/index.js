@@ -12430,8 +12430,6 @@ const run = async () => {
       }
     );
 
-    let commits = "";
-
     if (compare_commits?.data?.commits?.length === 0) {
       commits = "";
       return;
