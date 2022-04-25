@@ -167,12 +167,13 @@ const run = async () => {
 run();
 
 const createorupdatepr = async ({ branch, owner, repo, body, full_name }) => {
+  console.log("head-branch", branch);
   try {
     const existing_pr = await octokit.rest.pulls.list({
       owner,
       repo,
       state: "open",
-      head: branch,
+      head: owner + ":" + branch,
       base: DESTINATION_BRANCH,
     });
     if (existing_pr?.data?.length === 0) {
