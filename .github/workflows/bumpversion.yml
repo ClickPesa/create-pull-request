@@ -35,7 +35,7 @@ jobs:
         run: echo ${{ steps.version.outputs.PACKAGE_VERSION }}
 
       - name: bump version actions
-        uses: bmsteven/bump-version@1.0.4
+        uses: clickpesa/bump-version@1.0.4
         with: 
           GITHUB_TOKEN: ${{secrets.TOKEN}}
           SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
