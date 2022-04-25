@@ -15,8 +15,8 @@ jobs:
       - name: fetch all branches
         run: |
           git fetch --all
-          get checkout origin develop
-          
+          git checkout origin develop
+
       - name: pull latest develop branch changes
         run: git pull origin develop
 
