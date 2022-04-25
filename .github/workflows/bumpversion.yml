@@ -9,12 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: git pull origin develop
         with:
           token: ${{ secrets.TOKEN }} 
           ref: develop
       - name: pull latest develop branch changes
-        run: git pull
+        run: git pull origin develop
 
       #  push changes to develop
       - name: set global attributes
