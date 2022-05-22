@@ -23,5 +23,5 @@ jobs:
 
       - name: test create pr response
         run: |
-          - echo "The author was ${{ steps.create_pr.outputs.commits }}"
-          - echo "The author was ${{ steps.create_pr.outputs.branch }}"
+          echo "The commits was ${{ steps.create_pr.outputs.commits }}"
+          echo "The branch was ${{ steps.create_pr.outputs.branch }}"
