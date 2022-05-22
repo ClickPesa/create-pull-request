@@ -8,6 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: BaharaJr/merge-pr@0.0.2
-        with:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      # - uses: BaharaJr/merge-pr@0.0.2
+      #   with:
+      #     GITHUB_TOKEN: ${{ secrets.TOKEN }}
