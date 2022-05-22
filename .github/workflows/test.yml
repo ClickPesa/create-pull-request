@@ -19,7 +19,7 @@ jobs:
         with:
           GITHUB_TOKEN: ${{secrets.TOKEN}}
           DESTINATION_BRANCH: master
-          KEYWORD: "publish"
+          # KEYWORD: "publish"
 
       - name: test create pr response
         run: |
