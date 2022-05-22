@@ -15,7 +15,13 @@ jobs:
         run: npx yarn
 
       - uses: ./
+        id: create_pr
         with:
           GITHUB_TOKEN: ${{secrets.TOKEN}}
           DESTINATION_BRANCH: master
           KEYWORD: "publish"
+
+      - name: test create pr response
+        run: |
+          - echo "The author was ${{ steps.create_pr.outputs.commits }}"
+          - echo "The author was ${{ steps.create_pr.outputs.branch }}"
