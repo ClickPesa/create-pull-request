@@ -6,9 +6,6 @@ inputs:
   GITHUB_TOKEN:
     description: 'GitHub Token'
     required: true
-  SLACK_WEBHOOK_URL:
-    description: 'Slack webhook'
-    required: true
   DESTINATION_BRANCH:
     description: 'destination branch'
     required: true

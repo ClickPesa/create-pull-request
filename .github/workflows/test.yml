@@ -2,7 +2,8 @@ name: on merging to develop
 
 on:
    push:
-     branches: [**]
+     branches: 
+      - '*'
 
 jobs:
   build:
@@ -16,6 +17,5 @@ jobs:
       - uses: ./
         with:
           GITHUB_TOKEN: ${{secrets.TOKEN}}
-          SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
           DESTINATION_BRANCH: staging
           KEYWORD: "publish"
