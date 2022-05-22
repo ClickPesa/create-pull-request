@@ -120,6 +120,7 @@ const checkCompareCommits = ({ head, owner, full_name, repo }) => __awaiter(void
             return i === 0 ? '> ' + e.commit.message : e.commit.message;
         })
             .join('\n\n' + '> ');
+        core.info(commits);
         yield createorupdatepr({
             branch: head,
             owner,

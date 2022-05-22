@@ -87,6 +87,8 @@ const checkCompareCommits = async ({head, owner, full_name, repo}) => {
       })
       .join('\n\n' + '> ')
 
+    core.info(commits)
+
     await createorupdatepr({
       branch: head,
       owner,
