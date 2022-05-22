@@ -12,6 +12,9 @@ inputs:
   DESTINATION_BRANCH:
     description: 'destination branch'
     required: true
+  KEYWORD:
+    description: 'check whether to create pr or not if keyword is in head commit'
+    required: false
 runs:
   using: 'node16'
   main: './action/index.js'
