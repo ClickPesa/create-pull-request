@@ -110,7 +110,6 @@ const checkCompareCommits = ({ head, owner, full_name, repo }) => __awaiter(void
             base: DESTINATION_BRANCH,
             head
         })).data;
-        core.info(commits);
         if ((commits || []).length === 0) {
             core.warning('Trigger has no commit');
             return;
@@ -120,7 +119,6 @@ const checkCompareCommits = ({ head, owner, full_name, repo }) => __awaiter(void
             return i === 0 ? '> ' + e.commit.message : e.commit.message;
         })
             .join('\n\n' + '> ');
-        core.info(commits);
         yield createorupdatepr({
             branch: head,
             owner,
@@ -128,7 +126,7 @@ const checkCompareCommits = ({ head, owner, full_name, repo }) => __awaiter(void
             full_name,
             body: commits
         });
-        core.setOutput('pr_body', JSON.stringify(commits));
+        core.setOutput('pr_body', commits);
         core.setOutput('branch', head);
     }
     catch (e) {
