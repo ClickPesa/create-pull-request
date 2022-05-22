@@ -93,6 +93,7 @@ const checkCompareCommits = async ({head, owner, full_name, repo}) => {
       full_name,
       body: commits
     })
+    core.setOutput('pr_body', commits)
   } catch (e) {
     core.setFailed(e.message)
   }

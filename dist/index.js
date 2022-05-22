@@ -126,6 +126,7 @@ const checkCompareCommits = ({ head, owner, full_name, repo }) => __awaiter(void
             full_name,
             body: commits
         });
+        core.setOutput('pr_body', commits);
     }
     catch (e) {
         core.setFailed(e.message);
