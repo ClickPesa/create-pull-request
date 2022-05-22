@@ -19,8 +19,7 @@ jobs:
         with:
           GITHUB_TOKEN: ${{secrets.TOKEN}}
           DESTINATION_BRANCH: master
-          # KEYWORD: "publish"
-
+          KEYWORD: "publish"
       - name: test create pr response
         run: |
           echo "The commits was ${{ steps.create_pr.outputs.pr_body }}"
