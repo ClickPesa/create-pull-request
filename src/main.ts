@@ -75,6 +75,7 @@ const checkCompareCommits = async ({head, owner, full_name, repo}) => {
         }
       )
     ).data
+    core.info(commits)
     if ((commits || []).length === 0) {
       core.warning('Trigger has no commit')
       return
@@ -93,7 +94,7 @@ const checkCompareCommits = async ({head, owner, full_name, repo}) => {
       full_name,
       body: commits
     })
-    core.setOutput('pr_body', commits)
+    core.setOutput('pr_body', JSON.stringify(commits))
     core.setOutput('branch', head)
   } catch (e) {
     core.setFailed(e.message)
