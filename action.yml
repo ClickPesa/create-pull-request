@@ -6,15 +6,15 @@ inputs:
   GITHUB_TOKEN:
     description: 'GitHub Token'
     required: true
-  SLACK_WEBHOOK_URL:
-    description: 'Slack webhook'
-    required: true
   DESTINATION_BRANCH:
     description: 'destination branch'
     required: true
+  KEYWORD:
+    description: 'check whether to create pr or not if keyword is in head commit'
+    required: false
 runs:
   using: 'node16'
-  main: './action/index.js'
+  main: 'dist/index.js'
 
 branding:
   icon: 'package'

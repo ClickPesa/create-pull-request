@@ -2,7 +2,8 @@ name: on merging to develop
 
 on:
    push:
-     branches: [ develop ]
+     branches: 
+      - '*'
 
 jobs:
   build:
@@ -11,10 +12,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build
-        run: npm install
+        run: npx yarn
 
       - uses: ./
+        id: create_pr
         with:
           GITHUB_TOKEN: ${{secrets.TOKEN}}
-          SLACK_WEBHOOK_URL: ${{secrets.SLACK_WEBHOOK_URL}}
-          DESTINATION_BRANCH: staging
+          DESTINATION_BRANCH: master
+          KEYWORD: "publish"
+
+      - name: test create pr response
+        run: |
+          - echo "The author was ${{ steps.create_pr.outputs.commits }}"
+          - echo "The author was ${{ steps.create_pr.outputs.branch }}"
