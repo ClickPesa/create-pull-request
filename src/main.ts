@@ -101,8 +101,6 @@ const pr = async () => {
   try {
     const {message} = context?.payload?.head_commit
     const branch = context?.payload?.ref?.split('/')
-    core.info(context.payload.ref)
-    core.info(branch)
     if (!KEYWORD) {
       await checkCompareCommits({
         head: branch[branch.length - 1],

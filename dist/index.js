@@ -136,8 +136,6 @@ const pr = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { message } = (_b = context === null || context === void 0 ? void 0 : context.payload) === null || _b === void 0 ? void 0 : _b.head_commit;
         const branch = (_d = (_c = context === null || context === void 0 ? void 0 : context.payload) === null || _c === void 0 ? void 0 : _c.ref) === null || _d === void 0 ? void 0 : _d.split('/');
-        core.info(context.payload.ref);
-        core.info(branch);
         if (!KEYWORD) {
             yield checkCompareCommits({
                 head: branch[branch.length - 1],
