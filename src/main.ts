@@ -57,7 +57,7 @@ const createorupdatepr = async ({branch, owner, repo, body, full_name}) => {
       return updatepr
     }
   } catch (e) {
-    core.setFailed('error' + e.message)
+    core.setFailed(e.message)
   }
 }
 const checkCompareCommits = async ({head, owner, full_name, repo}) => {
@@ -84,7 +84,7 @@ const checkCompareCommits = async ({head, owner, full_name, repo}) => {
       })
       .join('\n\n' + '> ')
 
-    const createpr = await createorupdatepr({
+    const {data} = await createorupdatepr({
       branch: head,
       owner,
       repo,
@@ -93,24 +93,21 @@ const checkCompareCommits = async ({head, owner, full_name, repo}) => {
     })
     core.setOutput('pr_body', commits)
     core.setOutput('branch', head)
-    core.info(JSON.stringify(createpr?.data))
+    core.setOutput('pull_number', data?.number)
+    core.setOutput('html_url', data?.html_url)
   } catch (e) {
-    core.setFailed('error here' + e.message)
+    core.setFailed(e.message)
   }
 }
 const pr = async () => {
   try {
     let branch: any = HEAD_BRANCH
     const {message} = context?.payload?.head_commit
-    core.info(branch)
     if (!HEAD_BRANCH) {
       branch = context?.payload?.ref?.split('/')
       branch = branch[branch.length - 1]
     }
-    core.info(branch)
-
     if (!KEYWORD) {
-      core.info('here')
       await checkCompareCommits({
         head: branch,
         owner: context?.payload?.repository?.owner?.login,
@@ -130,7 +127,7 @@ const pr = async () => {
       repo: context?.payload?.repository?.name
     })
   } catch (e) {
-    core.setFailed('not error' + e.message)
+    core.setFailed(e.message)
   }
 }
 run()
