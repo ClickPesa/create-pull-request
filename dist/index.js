@@ -44,6 +44,7 @@ const github = __importStar(__nccwpck_require__(5438));
 const core = __importStar(__nccwpck_require__(2186));
 const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN');
 const DESTINATION_BRANCH = core.getInput('DESTINATION_BRANCH');
+const HEAD_BRANCH = core.getInput('HEAD_BRANCH');
 const KEYWORD = core.getInput('KEYWORD');
 const octokit = github.getOctokit(GITHUB_TOKEN);
 const { context = {} } = github;
@@ -57,8 +58,7 @@ function run() {
                 core.warning(`Event <${context.eventName}> is still WIP and will be available soon. Please submit an issue to the repo for quick delivery.`);
                 break;
             default:
-                core.warning(`Event <${context.eventName}> is still WIP and will be available soon. Please submit an issue to the repo for quick delivery.`);
-                break;
+                return pr();
         }
     });
 }
@@ -99,7 +99,7 @@ const createorupdatepr = ({ branch, owner, repo, body, full_name }) => __awaiter
         }
     }
     catch (e) {
-        core.setFailed(e.message);
+        core.setFailed('error' + e.message);
     }
 });
 const checkCompareCommits = ({ head, owner, full_name, repo }) => __awaiter(void 0, void 0, void 0, function* () {
@@ -119,7 +119,7 @@ const checkCompareCommits = ({ head, owner, full_name, repo }) => __awaiter(void
             return i === 0 ? '> ' + e.commit.message : e.commit.message;
         })
             .join('\n\n' + '> ');
-        yield createorupdatepr({
+        const createpr = yield createorupdatepr({
             branch: head,
             owner,
             repo,
@@ -128,19 +128,27 @@ const checkCompareCommits = ({ head, owner, full_name, repo }) => __awaiter(void
         });
         core.setOutput('pr_body', commits);
         core.setOutput('branch', head);
+        core.info(JSON.stringify(createpr === null || createpr === void 0 ? void 0 : createpr.data));
     }
     catch (e) {
-        core.setFailed(e.message);
+        core.setFailed('error here' + e.message);
     }
 });
 const pr = () => __awaiter(void 0, void 0, void 0, function* () {
     var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
     try {
+        let branch = HEAD_BRANCH;
         const { message } = (_b = context === null || context === void 0 ? void 0 : context.payload) === null || _b === void 0 ? void 0 : _b.head_commit;
-        const branch = (_d = (_c = context === null || context === void 0 ? void 0 : context.payload) === null || _c === void 0 ? void 0 : _c.ref) === null || _d === void 0 ? void 0 : _d.split('/');
+        core.info(branch);
+        if (!HEAD_BRANCH) {
+            branch = (_d = (_c = context === null || context === void 0 ? void 0 : context.payload) === null || _c === void 0 ? void 0 : _c.ref) === null || _d === void 0 ? void 0 : _d.split('/');
+            branch = branch[branch.length - 1];
+        }
+        core.info(branch);
         if (!KEYWORD) {
+            core.info('here');
             yield checkCompareCommits({
-                head: branch[branch.length - 1],
+                head: branch,
                 owner: (_g = (_f = (_e = context === null || context === void 0 ? void 0 : context.payload) === null || _e === void 0 ? void 0 : _e.repository) === null || _f === void 0 ? void 0 : _f.owner) === null || _g === void 0 ? void 0 : _g.login,
                 full_name: (_j = (_h = context === null || context === void 0 ? void 0 : context.payload) === null || _h === void 0 ? void 0 : _h.repository) === null || _j === void 0 ? void 0 : _j.full_name,
                 repo: (_l = (_k = context === null || context === void 0 ? void 0 : context.payload) === null || _k === void 0 ? void 0 : _k.repository) === null || _l === void 0 ? void 0 : _l.name
@@ -159,7 +167,7 @@ const pr = () => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (e) {
-        core.setFailed(e.message);
+        core.setFailed('not error' + e.message);
     }
 });
 run();

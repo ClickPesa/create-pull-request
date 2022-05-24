@@ -12,6 +12,9 @@ inputs:
   KEYWORD:
     description: 'check whether to create pr or not if keyword is in head commit'
     required: false
+  HEAD_BRANCH:
+    description: 'base branch, if null pull request will be created from working branch'
+    required: false
 runs:
   using: 'node16'
   main: 'dist/index.js'
