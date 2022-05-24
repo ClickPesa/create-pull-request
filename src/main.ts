@@ -105,7 +105,7 @@ const pr = async () => {
     core.info(branch)
     if (!HEAD_BRANCH) {
       branch = context?.payload?.ref?.split('/')
-      branch[branch.length - 1]
+      branch = branch[branch.length - 1]
     }
     core.info(branch)
 

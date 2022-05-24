@@ -142,7 +142,7 @@ const pr = () => __awaiter(void 0, void 0, void 0, function* () {
         core.info(branch);
         if (!HEAD_BRANCH) {
             branch = (_d = (_c = context === null || context === void 0 ? void 0 : context.payload) === null || _c === void 0 ? void 0 : _c.ref) === null || _d === void 0 ? void 0 : _d.split('/');
-            branch[branch.length - 1];
+            branch = branch[branch.length - 1];
         }
         core.info(branch);
         if (!KEYWORD) {
