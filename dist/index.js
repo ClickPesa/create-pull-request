@@ -136,10 +136,11 @@ const checkCompareCommits = ({ head, owner, full_name, repo }) => __awaiter(void
 });
 const pr = () => __awaiter(void 0, void 0, void 0, function* () {
     var _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
-    core.info('here');
     try {
         let branch = HEAD_BRANCH;
         const { message } = (_b = context === null || context === void 0 ? void 0 : context.payload) === null || _b === void 0 ? void 0 : _b.head_commit;
+        core.info(branch);
+        core.info('here');
         if (!HEAD_BRANCH) {
             branch = (_d = (_c = context === null || context === void 0 ? void 0 : context.payload) === null || _c === void 0 ? void 0 : _c.ref) === null || _d === void 0 ? void 0 : _d.split('/');
             branch[branch.length - 1];
