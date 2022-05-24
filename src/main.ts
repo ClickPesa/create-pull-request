@@ -4,6 +4,7 @@ import * as core from '@actions/core'
 
 const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN')
 const DESTINATION_BRANCH = core.getInput('DESTINATION_BRANCH')
+const HEAD_BRANCH = core.getInput('HEAD_BRANCH')
 const KEYWORD = core.getInput('KEYWORD')
 const octokit = github.getOctokit(GITHUB_TOKEN)
 const {context = {}}: any = github
@@ -19,9 +20,7 @@ async function run() {
       )
       break
     default:
-      core.warning(
-        `Event <${context.eventName}> is still WIP and will be available soon. Please submit an issue to the repo for quick delivery.`
-      )
+      return pr()
       break
   }
 }
@@ -86,7 +85,7 @@ const checkCompareCommits = async ({head, owner, full_name, repo}) => {
       })
       .join('\n\n' + '> ')
 
-    await createorupdatepr({
+    const createpr = await createorupdatepr({
       branch: head,
       owner,
       repo,
@@ -95,17 +94,23 @@ const checkCompareCommits = async ({head, owner, full_name, repo}) => {
     })
     core.setOutput('pr_body', commits)
     core.setOutput('branch', head)
+    core.info(JSON.stringify(createpr?.data))
   } catch (e) {
     core.setFailed(e.message)
   }
 }
 const pr = async () => {
   try {
+    let branch: any = HEAD_BRANCH
     const {message} = context?.payload?.head_commit
-    const branch = context?.payload?.ref?.split('/')
+    if (!HEAD_BRANCH) {
+      branch = context?.payload?.ref?.split('/')
+      branch[branch.length - 1]
+    }
+
     if (!KEYWORD) {
       await checkCompareCommits({
-        head: branch[branch.length - 1],
+        head: branch,
         owner: context?.payload?.repository?.owner?.login,
         full_name: context?.payload?.repository?.full_name,
         repo: context?.payload?.repository?.name
