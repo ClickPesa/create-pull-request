@@ -95,7 +95,7 @@ const checkCompareCommits = async ({head, owner, full_name, repo}) => {
     core.setOutput('branch', head)
     core.info(JSON.stringify(createpr?.data))
   } catch (e) {
-    core.setFailed(e.message)
+    core.setFailed('error here' + e.message)
   }
 }
 const pr = async () => {
@@ -103,13 +103,14 @@ const pr = async () => {
     let branch: any = HEAD_BRANCH
     const {message} = context?.payload?.head_commit
     core.info(branch)
-    core.info('here')
     if (!HEAD_BRANCH) {
       branch = context?.payload?.ref?.split('/')
       branch[branch.length - 1]
     }
+    core.info(branch)
 
     if (!KEYWORD) {
+      core.info('here')
       await checkCompareCommits({
         head: branch,
         owner: context?.payload?.repository?.owner?.login,
