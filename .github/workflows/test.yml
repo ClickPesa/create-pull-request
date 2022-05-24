@@ -23,3 +23,5 @@ jobs:
         run: |
           echo "The commits was ${{ steps.create_pr.outputs.pr_body }}"
           echo "The branch was ${{ steps.create_pr.outputs.branch }}"
+          echo "The pr number was ${{ steps.create_pr.outputs.pull_number }}"
+          echo "The pr url was ${{ steps.create_pr.outputs.html_url }}"
