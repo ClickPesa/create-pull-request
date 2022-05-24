@@ -99,6 +99,7 @@ const checkCompareCommits = async ({head, owner, full_name, repo}) => {
   }
 }
 const pr = async () => {
+  core.info('here')
   try {
     let branch: any = HEAD_BRANCH
     const {message} = context?.payload?.head_commit
