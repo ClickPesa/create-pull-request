@@ -21,7 +21,6 @@ async function run() {
       break
     default:
       return pr()
-      break
   }
 }
 const createorupdatepr = async ({branch, owner, repo, body, full_name}) => {
@@ -58,7 +57,7 @@ const createorupdatepr = async ({branch, owner, repo, body, full_name}) => {
       return updatepr
     }
   } catch (e) {
-    core.setFailed(e.message)
+    core.setFailed('error' + e.message)
   }
 }
 const checkCompareCommits = async ({head, owner, full_name, repo}) => {
@@ -128,7 +127,7 @@ const pr = async () => {
       repo: context?.payload?.repository?.name
     })
   } catch (e) {
-    core.setFailed(e.message)
+    core.setFailed('not error' + e.message)
   }
 }
 run()

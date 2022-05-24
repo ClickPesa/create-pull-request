@@ -59,7 +59,6 @@ function run() {
                 break;
             default:
                 return pr();
-                break;
         }
     });
 }
@@ -100,7 +99,7 @@ const createorupdatepr = ({ branch, owner, repo, body, full_name }) => __awaiter
         }
     }
     catch (e) {
-        core.setFailed(e.message);
+        core.setFailed('error' + e.message);
     }
 });
 const checkCompareCommits = ({ head, owner, full_name, repo }) => __awaiter(void 0, void 0, void 0, function* () {
@@ -165,7 +164,7 @@ const pr = () => __awaiter(void 0, void 0, void 0, function* () {
         });
     }
     catch (e) {
-        core.setFailed(e.message);
+        core.setFailed('not error' + e.message);
     }
 });
 run();
